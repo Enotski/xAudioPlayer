@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace xAudioPlayer.Repositories {
+﻿namespace xAudioPlayer.Repositories {
+	/// <summary>
+	/// Repository of custom settings
+	/// </summary>
 	public class SettingsRepository {
 	}
 }

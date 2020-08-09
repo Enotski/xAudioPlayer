@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 
 namespace xAudioPlayer.Services {
+	/// <summary>
+	/// Custom appearing of absLayout
+	/// </summary>
 	public class CustomAbsoluteLayout : AbsoluteLayout {
+		/// <summary>
+		/// Smooth appearance of layout
+		/// </summary>
+		/// <param name="propertyName"></param>
 		protected async override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
 			base.OnPropertyChanged(propertyName);
 			if (propertyName == "IsEnabled") {

@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using xAudioPlayer.Models;
@@ -13,6 +7,9 @@ using xAudioPlayer.Repositories;
 using xAudioPlayer.Services;
 
 namespace xAudioPlayer.ViewModels {
+	/// <summary>
+	/// VM of player page
+	/// </summary>
 	public class PlayerViewModel : BaseViewModel {
 		enum RepeatTypeEnum {
 			None,
@@ -35,8 +32,9 @@ namespace xAudioPlayer.ViewModels {
 		RepeatTypeEnum _repeatType = RepeatTypeEnum.None;
 		Color _shuffleBtnColor = Color.CadetBlue;
 		Color _repeatBtnColor = Color.CadetBlue;
-		public static PlaylistRepository PlaylistRepository = PlaylistRepository.GetInstance();
 		AudioFile _currentAudioFile;
+
+		public static PlaylistRepository PlaylistRepository = PlaylistRepository.GetInstance();
 
 		public string PrevIcon { get; } = Constants.Icons["mdi-chevron-left"];
 		public string NextIcon { get; } = Constants.Icons["mdi-chevron-right"];
@@ -109,19 +107,50 @@ namespace xAudioPlayer.ViewModels {
 					AudioFileMenuVisible = false;
 				});
 		}
-
+		/// <summary>
+		/// Open master page
+		/// </summary>
 		public ICommand MenuCommand { private set; get; }
+		/// <summary>
+		/// Open menu of current audio file
+		/// </summary>
 		public ICommand AudioFileMenuCommand { private set; get; }
+		/// <summary>
+		/// Shuffle current pl
+		/// </summary>
 		public ICommand ShuffleCommand { private set; get; }
+		/// <summary>
+		/// Change current audio file with prev/next 
+		/// </summary>
 		public ICommand ChangeAudioFileCommand { private set; get; }
+		/// <summary>
+		/// Play/pause
+		/// </summary>
 		public ICommand PlayPauseCommand { private set; get; }
+		/// <summary>
+		/// Change repeat mod (None/One/All)
+		/// </summary>
 		public ICommand RepeatCommand { private set; get; }
+		/// <summary>
+		/// Handle changed of audio file progress
+		/// </summary>
 		public ICommand AudioFileProgressChangedCommand { private set; get; }
-		public ICommand ModalBackGroundTappedCommand { private set; get; }
-		public ICommand AddCommand { private set; get; }
-		public ICommand RemoveCommand { private set; get; }
+		/// <summary>
+		/// Handle changing of audio file progress
+		/// </summary>
 		public ICommand AudioFileProgressChangingCommand { private set; get; }
-
+		/// <summary>
+		/// Modal bg tapped
+		/// </summary>
+		public ICommand ModalBackGroundTappedCommand { private set; get; }
+		/// <summary>
+		/// Add audio file to any pl
+		/// </summary>
+		public ICommand AddCommand { private set; get; }
+		/// <summary>
+		/// Remove audio file from any pl
+		/// </summary>
+		public ICommand RemoveCommand { private set; get; }
 
 		public string PlaylistCount {
 			set { SetProperty(ref _playlistCount, value); }

@@ -13,8 +13,8 @@ namespace xAudioPlayer.Droid {
 	[Activity(Label = "xAudioPlayer", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity {
 		protected override void OnCreate(Bundle savedInstanceState) {
-			TabLayoutResource = Resource.Layout.Tabbar;
-			ToolbarResource = Resource.Layout.Toolbar;
+			TabLayoutResource = Android.Resource.Layout.Tabbar;
+			ToolbarResource = Android.Resource.Layout.Toolbar;
 			TryToGetPermissions();
 			base.OnCreate(savedInstanceState);
 

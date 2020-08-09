@@ -24,24 +24,26 @@ namespace xAudioPlayer.Models {
 		public event EventHandler OrderChanged;
 
 		public void ChangeOrdinal(int oldIndex, int newIndex) {
-			var priorIndex = oldIndex;
-			var latterIndex = newIndex;
+			try {
+				var priorIndex = oldIndex;
+				var latterIndex = newIndex;
 
-			var changedItem = Items[oldIndex];
-			if (newIndex < oldIndex) {
-				// add one to where we delete, because we're increasing the index by inserting
-				priorIndex += 1;
-			} else {
-				// add one to where we insert, because we haven't deleted the original yet
-				latterIndex += 1;
-			}
+				var changedItem = Items[oldIndex];
+				if (newIndex < oldIndex) {
+					// add one to where we delete, because we're increasing the index by inserting
+					priorIndex += 1;
+				} else {
+					// add one to where we insert, because we haven't deleted the original yet
+					latterIndex += 1;
+				}
 
-			Items.Insert(latterIndex, changedItem);
-			Items.RemoveAt(priorIndex);
+				Items.Insert(latterIndex, changedItem);
+				Items.RemoveAt(priorIndex);
 
-			OrderChanged?.Invoke(this, EventArgs.Empty);
+				OrderChanged?.Invoke(this, EventArgs.Empty);
 
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, changedItem, newIndex, oldIndex));
+				OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, changedItem, newIndex, oldIndex));
+			} catch { }
 		}
 
 		/// <summary>
@@ -64,34 +66,35 @@ namespace xAudioPlayer.Models {
 			if (collection == null) {
 				throw new ArgumentNullException(nameof(collection));
 			}
+			try {
+				CheckReentrancy();
 
-			CheckReentrancy();
+				int startIndex = Count;
 
-			int startIndex = Count;
+				var updatedItems = collection.Where(item => Items.Any(contact => _equivalenceComparer.Equals(contact, item))).ToList();
 
-			var updatedItems = collection.Where(item => Items.Any(contact => _equivalenceComparer.Equals(contact, item))).ToList();
+				bool anyItemUpdated = false;
 
-			bool anyItemUpdated = false;
+				foreach (var updateItem in updatedItems) {
+					var existingItem = Items.FirstOrDefault(contact => _equivalenceComparer.Equals(contact, updateItem));
 
-			foreach (var updateItem in updatedItems) {
-				var existingItem = Items.FirstOrDefault(contact => _equivalenceComparer.Equals(contact, updateItem));
+					// TODO: We can fire NotifyCollectionChanged.Update if needed depending on anyItemUpdated.
+					anyItemUpdated = anyItemUpdated | _updateFunction?.Invoke(existingItem, updateItem) ?? false;
+				}
 
-				// TODO: We can fire NotifyCollectionChanged.Update if needed depending on anyItemUpdated.
-				anyItemUpdated = anyItemUpdated | _updateFunction?.Invoke(existingItem, updateItem) ?? false;
-			}
+				var newItems = collection.Where(item => !Items.Any(contact => _equivalenceComparer.Equals(contact, item))).ToList();
 
-			var newItems = collection.Where(item => !Items.Any(contact => _equivalenceComparer.Equals(contact, item))).ToList();
+				if (!newItems.Any()) {
+					return;
+				}
 
-			if (!newItems.Any()) {
-				return;
-			}
+				foreach (var item in newItems) {
+					Items.Add(item);
+				}
 
-			foreach (var item in newItems) {
-				Items.Add(item);
-			}
-
-			OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, startIndex));
+				OnPropertyChanged(new PropertyChangedEventArgs("Count"));
+				OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, newItems, startIndex));
+			} catch { }
 		}
 	}
 }

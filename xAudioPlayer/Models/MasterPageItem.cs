@@ -1,6 +1,9 @@
 ﻿using System;
 
 namespace xAudioPlayer.Models {
+	/// <summary>
+	/// Master page item
+	/// </summary>
 	public class MasterPageItem {
 		public string Title { get; set; }
 		public string Icon { get; set; }

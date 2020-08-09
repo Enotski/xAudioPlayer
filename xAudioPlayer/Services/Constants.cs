@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace xAudioPlayer.Services {
+	/// <summary>
+	/// Class of constants
+	/// </summary>
 	public static class Constants {
 		public static Dictionary<string, string> Icons = new Dictionary<string, string>() {
 			{"mdi-menu", "\U000F035C"},

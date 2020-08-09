@@ -1,14 +1,14 @@
-﻿using MediaManager;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using Xamarin.Forms;
 using xAudioPlayer.Models;
 using xAudioPlayer.Services;
 
 namespace xAudioPlayer.Repositories {
+	/// <summary>
+	/// Repository for working with playlists
+	/// </summary>
 	public class PlaylistRepository {
 		private static PlaylistRepository _instance;
 		private PlaylistRepository() {
@@ -24,27 +24,49 @@ namespace xAudioPlayer.Repositories {
 				_instance = new PlaylistRepository();
 			return _instance;
 		}
+		/// <summary>
+		/// Occures when current playlist collection start changing
+		/// </summary>
 		public delegate void CurrentPlaylistRefreshing();
 		public event CurrentPlaylistRefreshing OnCurrentPlaylistRefreshing;
 
+		/// <summary>
+		/// Occures when current playlist collection changed
+		/// </summary>
 		public delegate void CurrentPlaylistRefreshed();
 		public event CurrentPlaylistRefreshed OnCurrentPlaylistRefreshed;
 
+		/// <summary>
+		/// Occures when playlist was add/removed from dictionary
+		/// </summary>
 		public delegate void PlaylistsCollectionRefreshed();
 		public event PlaylistsCollectionRefreshed OnPlaylistsCollectionRefreshed;
 
 		public string CurrentPlaylistName { get; set; }
 		public Dictionary<string, List<AudioFile>> Playlists { get; } = new Dictionary<string, List<AudioFile>>();
 
+		/// <summary>
+		/// Get data from xml file
+		/// </summary>
 		public async void GetDataFromXml() {
 
 		}
+		/// <summary>
+		/// Save data to xml file
+		/// </summary>
 		public async void SetDataToXml() {
 
 		}
-		public void SetCurrentPlaylist() {
+		/// <summary>
+		/// Chnage current playlist
+		/// </summary>
+		public void SetCurrentPlaylist(string name) {
 
 		}
+		/// <summary>
+		/// Refresh playlist by storage
+		/// </summary>
+		/// <param name="itemsPaths"></param>
 		public void RefreshCurrentPlaylistByStorage(IEnumerable<string> itemsPaths) {
 			try {
 				OnCurrentPlaylistRefreshing?.Invoke();
@@ -52,84 +74,127 @@ namespace xAudioPlayer.Repositories {
 				OnCurrentPlaylistRefreshed?.Invoke();
 			} catch (Exception ex) { OnCurrentPlaylistRefreshed?.Invoke(); }
 		}
-		public void RemoveItems(string type = null, IEnumerable<string> items = null) {
-			if (Playlists.ContainsKey(CurrentPlaylistName)) {
-				if (items == null)
-					Playlists[CurrentPlaylistName].Clear();
-				else {
-					Playlists[CurrentPlaylistName].RemoveAll(x => items.Contains(x.FullPath));
+		/// <summary>
+		/// Remove items from playlist/directory
+		/// </summary>
+		/// <param name="type">Directory</param>
+		/// <param name="items">if items is null, then clear collection</param>
+		public void RemoveItems(bool fromDir, IEnumerable<string> items = null) {
+			try {
+				if (Playlists.ContainsKey(CurrentPlaylistName)) {
+					if (items == null)
+						Playlists[CurrentPlaylistName].Clear();
+					else {
+						Playlists[CurrentPlaylistName].RemoveAll(x => items.Contains(x.FullPath));
 
-					if (type == "Directory")
-						FileBrowser.RemoveFiles(items);
-				}
-			}
-		}
-		public void AddToPlayList(string playlistName, IEnumerable<string> itemsPaths) {
-			if (Playlists.ContainsKey(playlistName)) {
-				foreach (var itemPath in itemsPaths) {
-					if (File.Exists(itemPath) && !Playlists[playlistName].Any(x => x.FullPath == itemPath) && Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath))
-						Playlists[playlistName].Add(Playlists[CurrentPlaylistName].First(x => x.FullPath == itemPath));
-				}
-			}
-		}
-		public void RemoveFromPlayList(string playlistName, IEnumerable<string> itemsPaths) {
-			if (Playlists.ContainsKey(playlistName)) {
-				foreach (var itemPath in itemsPaths) {
-					if (Playlists[playlistName].Any(x => x.FullPath == itemPath))
-						Playlists[playlistName].RemoveAll(x => x.FullPath == itemPath);
-				}
-			}
-		}
-		private void RefreshPlaylist(IEnumerable<string> itemsPaths) {
-			if (Playlists.ContainsKey(CurrentPlaylistName)) {
-				if (itemsPaths?.Any() ?? false) {
-					foreach (var itemPath in itemsPaths) {
-						try {
-							if (Directory.Exists(itemPath))
-								RefreshPlaylist(new DirectoryInfo(itemPath).GetFileSystemInfos().Select(f => f.FullName));
-
-							if (!File.Exists(itemPath)) {
-								if (Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath)) {
-									Playlists[CurrentPlaylistName].RemoveAll(x => x.FullPath == itemPath);
-								}
-								continue;
-
-							} else if (!Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath)) {
-								var file = new FileInfo(itemPath);
-
-								if (!Constants.AudioFileExtensions.Contains(file.Extension.ToLower()))
-									continue;
-
-								var tfile = TagLib.File.Create(itemPath);
-								Playlists[CurrentPlaylistName].Add(new AudioFile() {
-									Name = file.Name.Replace(file.Extension, ""),
-									FullPath = file.FullName,
-									FolderName = file.DirectoryName,
-									BitRate = tfile.Properties.AudioBitrate,
-									ExtensionName = file.Extension,
-									SampleRate = tfile.Properties.AudioSampleRate,
-									Channels = tfile.Properties.AudioChannels,
-									Duration = tfile.Properties.Duration,
-									Size = file.Length
-								});
-
-							}
-						} catch { continue; }
+						if (fromDir)
+							FileBrowser.RemoveFiles(items);
 					}
 				}
-			}
+			} catch (Exception ex) { }
 		}
+		/// <summary>
+		/// Add audio files from current playlist to other
+		/// </summary>
+		/// <param name="playlistName">Specified playlist</param>
+		/// <param name="itemsPaths">Files paths</param>
+		public void AddToPlayList(string playlistName, IEnumerable<string> itemsPaths) {
+			try {
+				if (Playlists.ContainsKey(playlistName)) {
+					foreach (var itemPath in itemsPaths) {
+						try {
+							if (File.Exists(itemPath) && !Playlists[playlistName].Any(x => x.FullPath == itemPath) && Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath))
+								Playlists[playlistName].Add(Playlists[CurrentPlaylistName].First(x => x.FullPath == itemPath));
+						} catch (Exception ex) { }
+					}
+				}
+			} catch (Exception ex) { }
+		}
+		/// <summary>
+		/// Remove audio file from specified playlist
+		/// </summary>
+		/// <param name="playlistName">Specified playlist</param>
+		/// <param name="itemsPaths">Files paths</param>
+		public void RemoveFromPlayList(string playlistName, IEnumerable<string> itemsPaths) {
+			try {
+				if (Playlists.ContainsKey(playlistName)) {
+					foreach (var itemPath in itemsPaths) {
+						try {
+							if (Playlists[playlistName].Any(x => x.FullPath == itemPath))
+								Playlists[playlistName].RemoveAll(x => x.FullPath == itemPath);
+						} catch (Exception ex) { }
+					}
+				}
+			} catch (Exception ex) { }
+		}
+		/// <summary>
+		/// Refresh current playlist
+		/// </summary>
+		/// <param name="itemsPaths">Files paths</param>
+		private void RefreshPlaylist(IEnumerable<string> itemsPaths) {
+			try {
+				if (Playlists.ContainsKey(CurrentPlaylistName)) {
+					if (itemsPaths?.Any() ?? false) {
+						foreach (var itemPath in itemsPaths) {
+							try {
+								if (Directory.Exists(itemPath))
+									RefreshPlaylist(new DirectoryInfo(itemPath).GetFileSystemInfos().Select(f => f.FullName));
+
+								if (!File.Exists(itemPath)) {
+									if (Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath)) {
+										Playlists[CurrentPlaylistName].RemoveAll(x => x.FullPath == itemPath);
+									}
+									continue;
+
+								} else if (!Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath)) {
+									var file = new FileInfo(itemPath);
+
+									if (!Constants.AudioFileExtensions.Contains(file.Extension.ToLower()))
+										continue;
+
+									var tfile = TagLib.File.Create(itemPath);
+									Playlists[CurrentPlaylistName].Add(new AudioFile() {
+										Name = file.Name.Replace(file.Extension, ""),
+										FullPath = file.FullName,
+										FolderName = file.DirectoryName,
+										BitRate = tfile.Properties.AudioBitrate,
+										ExtensionName = file.Extension,
+										SampleRate = tfile.Properties.AudioSampleRate,
+										Channels = tfile.Properties.AudioChannels,
+										Duration = tfile.Properties.Duration,
+										Size = file.Length
+									});
+
+								}
+							} catch { continue; }
+						}
+					}
+				}
+			} catch (Exception ex) { }
+		}
+		/// <summary>
+		/// Add new playlist to dict
+		/// </summary>
+		/// <param name="name">Name of pl</param>
 		public void AddPlayList(string name) {
-			if (!string.IsNullOrWhiteSpace(name) && !Playlists.ContainsKey(name)) {
-				Playlists.Add(name, new List<AudioFile>());
-				OnPlaylistsCollectionRefreshed?.Invoke();
-			}
+			try {
+				if (!string.IsNullOrWhiteSpace(name) && !Playlists.ContainsKey(name)) {
+					Playlists.Add(name, new List<AudioFile>());
+					OnPlaylistsCollectionRefreshed?.Invoke();
+				}
+			} catch (Exception ex) { }
 		}
+		/// <summary>
+		/// Remove existing playlist from dict
+		/// </summary>
+		/// <param name="name">Name of pl</param>
 		public void RemovePlaylist(string name) {
-			if (!string.IsNullOrWhiteSpace(name) &&  Playlists.ContainsKey(name) && (name != "Default" || name != "Favorite" || name != "Queue")) {
-				Playlists.Remove(name);
-				OnPlaylistsCollectionRefreshed?.Invoke();
-			}
+			try {
+				if (!string.IsNullOrWhiteSpace(name) && Playlists.ContainsKey(name) && (name != "Default" || name != "Favorite" || name != "Queue")) {
+					Playlists.Remove(name);
+					OnPlaylistsCollectionRefreshed?.Invoke();
+				}
+			} catch (Exception ex) { }
 		}
 	}
 }

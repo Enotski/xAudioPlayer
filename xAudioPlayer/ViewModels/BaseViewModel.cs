@@ -1,12 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Xamarin.Forms;
-using xAudioPlayer.Services;
 
 namespace xAudioPlayer.ViewModels {
+	/// <summary>
+	/// Base class of view-model
+	/// </summary>
 	public class BaseViewModel : INotifyPropertyChanged {
 
 		protected INavigation Navigation { get; set; }

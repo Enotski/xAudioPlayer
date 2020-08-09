@@ -4,11 +4,12 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using xAudioPlayer.Models;
-using xAudioPlayer.Services;
 
 namespace xAudioPlayer.Services {
+	/// <summary>
+	/// Methods for browsing, fetching storage files 
+	/// </summary>
 	public static class FileBrowser {
 		/// <summary>
 		/// Get size of directory in b/kb/Mb etc

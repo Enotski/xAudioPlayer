@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Xamarin.Forms;
 
-namespace xAudioPlayer.Effects
-{
-	public class ViewShadowEffect : RoutingEffect
-	{
+namespace xAudioPlayer.Effects {
+	/// <summary>
+	/// Shadow
+	/// </summary>
+	public class ViewShadowEffect : RoutingEffect {
 		public float Radius { get; set; }
 
 		public Color Color { get; set; }
@@ -14,47 +14,42 @@ namespace xAudioPlayer.Effects
 
 		public float DistanceY { get; set; }
 
-		public ViewShadowEffect() : base("CubiSoft.DropShadowEffect")
-		{
+		public ViewShadowEffect() : base("CubiSoft.DropShadowEffect") {
 		}
 	}
+	/// <summary>
+	/// Sorting bindabple property
+	/// </summary>
+	public static class Sorting {
+		public static readonly BindableProperty IsSortableProperty =
+			BindableProperty.CreateAttached("IsSortable", typeof(bool), typeof(ListViewSortableEffect), false,
+				propertyChanged: OnIsSortableChanged);
 
-    public static class Sorting
-    {
-        public static readonly BindableProperty IsSortableProperty =
-            BindableProperty.CreateAttached("IsSortable", typeof(bool), typeof(ListViewSortableEffect), false,
-                propertyChanged: OnIsSortableChanged);
+		public static bool GetIsSortable(BindableObject view) {
+			return (bool)view.GetValue(IsSortableProperty);
+		}
 
-        public static bool GetIsSortable(BindableObject view)
-        {
-            return (bool)view.GetValue(IsSortableProperty);
-        }
+		public static void SetIsSortable(BindableObject view, bool value) {
+			view.SetValue(IsSortableProperty, value);
+		}
 
-        public static void SetIsSortable(BindableObject view, bool value)
-        {
-            view.SetValue(IsSortableProperty, value);
-        }
+		static void OnIsSortableChanged(BindableObject bindable, object oldValue, object newValue) {
+			try {
+				var view = bindable as ListView;
+				if (view == null) {
+					return;
+				}
 
-        static void OnIsSortableChanged(BindableObject bindable, object oldValue, object newValue)
-        {
-            var view = bindable as ListView;
-            if (view == null)
-            {
-                return;
-            }
+				if (!view.Effects.Any(item => item is ListViewSortableEffect)) {
+					view.Effects.Add(new ListViewSortableEffect());
+				}
+			} catch { }
+		}
 
-            if (!view.Effects.Any(item => item is ListViewSortableEffect))
-            {
-                view.Effects.Add(new ListViewSortableEffect());
-            }
-        }
+		class ListViewSortableEffect : RoutingEffect {
+			public ListViewSortableEffect() : base("CubiSoft.ListViewSortableEffect") {
 
-        class ListViewSortableEffect : RoutingEffect
-        {
-            public ListViewSortableEffect() : base("CubiSoft.ListViewSortableEffect")
-            {
-
-            }
-        }
-    }
+			}
+		}
+	}
 }

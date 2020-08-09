@@ -1,19 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xamarin.Forms;
 using xAudioPlayer.Interfaces;
 
 namespace xAudioPlayer.Services {
+	/// <summary>
+	/// Button clicked trigger
+	/// </summary>
 	public class ButtonClickedTriggerAction : TriggerAction<Button> {
 		ILocationFetcher service;
+		/// <summary>
+		/// Get service
+		/// </summary>
 		public ButtonClickedTriggerAction() {
 			service = DependencyService.Get<ILocationFetcher>();
 		}
+		/// <summary>
+		/// Get button location
+		/// </summary>
+		/// <param name="action"></param>
 		public ButtonClickedTriggerAction(Action<System.Drawing.PointF> action) : this() {
 			OnLocationFetched += (arg) => action(arg);
 		}
-
+		/// <summary>
+		/// Change color of button when it's clicked
+		/// </summary>
+		/// <param name="sender"></param>
 		protected override async void Invoke(Button sender) {
 			try {
 				if (sender.Parent.Parent.GetType() == typeof(ViewCell)) {

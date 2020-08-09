@@ -2,6 +2,7 @@ B:\WorkShop\xAudioPlayer\xAudioPlayer\bin\Debug\netstandard2.0\xAudioPlayer.deps
 B:\WorkShop\xAudioPlayer\xAudioPlayer\bin\Debug\netstandard2.0\xAudioPlayer.dll
 B:\WorkShop\xAudioPlayer\xAudioPlayer\bin\Debug\netstandard2.0\ref\xAudioPlayer.dll
 B:\WorkShop\xAudioPlayer\xAudioPlayer\bin\Debug\netstandard2.0\xAudioPlayer.pdb
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.csprojAssemblyReference.cache
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\App.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\AudioFileInfoPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\FileBrowserPage.xaml.g.cs

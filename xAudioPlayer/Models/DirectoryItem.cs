@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using Xamarin.Forms;
 
 namespace xAudioPlayer.Models {
+	/// <summary>
+	/// Directory item
+	/// </summary>
 	public class DirectoryItem : ListItem, INotifyPropertyChanged {
 
 		private bool _itemChecked = false;

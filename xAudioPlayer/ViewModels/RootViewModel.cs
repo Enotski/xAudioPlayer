@@ -13,6 +13,9 @@ using xAudioPlayer.Services;
 using xAudioPlayer.Views;
 
 namespace xAudioPlayer.ViewModels {
+	/// <summary>
+	/// VM of master page (RootPage)
+	/// </summary>
 	public class RootViewModel : BaseViewModel {
 		bool _modalBgVisible;
 		bool _modalNewPlaylistEnabled;
@@ -27,7 +30,7 @@ namespace xAudioPlayer.ViewModels {
 		Color _errorDublicateMessageColor = Color.Transparent;
 		MasterPageItem _selectedMasterItem;
 		MasterPageItem _selectedPlaylistItem;
-		PlaylistRepository plRepo = PlaylistRepository.GetInstance();
+		PlaylistRepository _plRepo = PlaylistRepository.GetInstance();
 
 		ObservableCollection<MasterPageItem> _masterItemsList = new ObservableCollection<MasterPageItem>();
 		ObservableCollection<MasterPageItem> _playlistsCollection = new ObservableCollection<MasterPageItem>();
@@ -37,7 +40,7 @@ namespace xAudioPlayer.ViewModels {
 		public string PlaylistRemoveIcon { get; } = Constants.Icons["mdi-playlist-remove"];
 
 		public RootViewModel(INavigation nav) : base(nav) {
-			plRepo.OnPlaylistsCollectionRefreshed += RefreshPlaylistCollection;
+			_plRepo.OnPlaylistsCollectionRefreshed += RefreshPlaylistCollection;
 			RefreshPlaylistCollection();
 			RefreshMasterItemsList();
 
@@ -71,10 +74,10 @@ namespace xAudioPlayer.ViewModels {
 					if (args.ToString() == "add_ok") {
 						if (_errorDublicateMessageVisible)
 							return;
-						plRepo.AddPlayList(PlaylistNameText);
+						_plRepo.AddPlayList(PlaylistNameText);
 					}
 					if (args.ToString() == "remove_ok") {
-						plRepo.RemovePlaylist(_playlistNameToRemove);
+						_plRepo.RemovePlaylist(_playlistNameToRemove);
 					}
 					ModalBgVisible = false;
 					ModalNewPlaylistEnabled = false;
@@ -109,12 +112,33 @@ namespace xAudioPlayer.ViewModels {
 				});
 		}
 
+		/// <summary>
+		/// Get add new pl modal
+		/// </summary>
 		public ICommand AddPlaylistCommand { get; set; }
+		/// <summary>
+		/// Get remove pl confirm modal
+		/// </summary>
 		public ICommand RemovePlaylistCommand { get; set; }
+		/// <summary>
+		/// Get settings page as modal
+		/// </summary>
 		public ICommand SettingsCommand { get; set; }
+		/// <summary>
+		/// Close opened modal
+		/// </summary>
 		public ICommand CloseModalCommand { get; set; }
+		/// <summary>
+		/// Modal bg tapped
+		/// </summary>
 		public ICommand ModalBackGroundTappedCommand { get; set; }
+		/// <summary>
+		/// Open page selected master item
+		/// </summary>
 		public ICommand MasterItemSelectedCommand { get; set; }
+		/// <summary>
+		/// Change current playlist to selected
+		/// </summary>
 		public ICommand PlaylistItemSelectedCommand { get; set; }
 
 		public bool ModalBgVisible {
@@ -157,11 +181,12 @@ namespace xAudioPlayer.ViewModels {
 			set { SetProperty(ref _errorDublicateMessageColor, value); }
 			get { return _errorDublicateMessageColor; }
 		}
+
 		public string PlaylistNameText {
 			set {
 				SetProperty(ref _playlistNameText, value);
 				// Validation
-				_errorDublicateMessageVisible = plRepo.Playlists.ContainsKey(_playlistNameText);
+				_errorDublicateMessageVisible = _plRepo.Playlists.ContainsKey(_playlistNameText);
 				PlaylistNameFrameColor = _errorDublicateMessageVisible ? Color.OrangeRed : Color.Transparent;
 				ErrorDublicateMessageColor = _errorDublicateMessageVisible ? Color.OrangeRed : Color.Transparent;
 			}
@@ -195,6 +220,9 @@ namespace xAudioPlayer.ViewModels {
 				SelectedPlaylistItem = null;
 			}
 		}
+		/// <summary>
+		/// Refresh master items list (little trick to avoid bug)
+		/// </summary>
 		public async void RefreshMasterItemsList() {
 			await Task.Run(() => {
 				MasterItemsList = new ObservableCollection<MasterPageItem>() {
@@ -204,10 +232,13 @@ namespace xAudioPlayer.ViewModels {
 				};
 			});
 		}
+		/// <summary>
+		/// Refresh master items list (little trick to avoid bug)
+		/// </summary>
 		public async void RefreshPlaylistCollection() {
 			await Task.Run(() => {
 				PlaylistsCollection.Clear();
-				foreach (var item in plRepo.Playlists.Keys.ToList()) {
+				foreach (var item in _plRepo.Playlists.Keys.ToList()) {
 					if (item == "Queue" || item == "Favorite")
 						continue;
 					PlaylistsCollection.Add(new MasterPageItem { Icon = Constants.Icons["mdi-playlist-music"], Title = item });

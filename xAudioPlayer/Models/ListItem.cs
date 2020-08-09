@@ -1,4 +1,7 @@
 ﻿namespace xAudioPlayer.Models {
+	/// <summary>
+	/// Base class of collection item 
+	/// </summary>
 	public class ListItem {
 		public string Name { get; set; }
 		public string Icon { get; set; }
