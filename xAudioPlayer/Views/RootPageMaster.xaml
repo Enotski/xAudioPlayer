@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:models="clr-namespace:xAudioPlayer.Models"
+			 xmlns:views="clr-namespace:xAudioPlayer.Views"
+			 xmlns:services="clr-namespace:xAudioPlayer.Services"
+             mc:Ignorable="d"
+             x:Class="xAudioPlayer.Views.RootPageMaster"
+             Title="Master">
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<Style TargetType="Button">
+				<Style.Triggers>
+					<EventTrigger Event="Clicked">
+						<services:ButtonClickedTriggerAction />
+					</EventTrigger>
+				</Style.Triggers>
+			</Style>
+		</ResourceDictionary>
+	</ContentPage.Resources>
+	<ContentPage.Content>
+		<RelativeLayout>
+			<StackLayout x:Name="RootPageMainContent" Orientation="Vertical" Margin="0,0,0,5"
+						RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
+						RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+				<ListView x:Name="MenuListView" HasUnevenRows="True" x:FieldModifier="public" VerticalOptions="Start"
+						   ItemsSource="{Binding MasterItemsList}" SelectedItem="{Binding SelectedMasterItem, Mode=TwoWay}" 
+							SeparatorVisibility="None" BackgroundColor="White" HeightRequest="250">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<ViewCell>
+								<Grid Padding="5,10">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="30"/>
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Label Grid.Column="0" HorizontalOptions="StartAndExpand" Text="{Binding Icon}" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" TextColor="DeepSkyBlue" FontSize="30"/>
+									<Label Grid.Column="1" Text="{Binding Title}" TextColor="DeepSkyBlue" VerticalTextAlignment="Center" FontSize="18"/>
+								</Grid>
+							</ViewCell>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+				<ListView x:Name="PlaylistCollectionListView" HasUnevenRows="True" x:FieldModifier="public" VerticalOptions="StartAndExpand"
+				  SeparatorVisibility="None" BackgroundColor="White"
+						   ItemsSource="{Binding PlaylistsCollection}" SelectedItem="{Binding SelectedPlaylistItem}" >
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<ViewCell>
+								<StackLayout x:Name="Item" Orientation="Horizontal" Margin="5">
+									<Label HorizontalOptions="Start" Text="{Binding Icon}" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" VerticalTextAlignment="Center" TextColor="DeepSkyBlue" FontSize="30"/>
+									<Label HorizontalOptions="StartAndExpand" Text="{Binding Title}" TextColor="DeepSkyBlue" VerticalTextAlignment="Center" FontSize="18"/>
+									<Button HorizontalOptions="EndAndExpand" Text="{Binding PlaylistRemoveIcon}" VerticalOptions="CenterAndExpand" Padding="0"
+									BindingContext="{Binding Source={x:Reference PlaylistCollectionListView}, Path=BindingContext}"
+									Command="{Binding RemovePlaylistCommand}" CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"
+									TextColor="DeepSkyBlue" BackgroundColor="Transparent" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" WidthRequest="50" FontSize="26"/>
+								</StackLayout>
+							</ViewCell>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
+				<Button HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand" BackgroundColor="Transparent" Text="{Binding PlaylistAddIcon}" Command="{Binding AddPlaylistCommand}" CommandParameter="{Binding .}" TextColor="DeepSkyBlue" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" WidthRequest="50" FontSize="26"/>
+				<Button HorizontalOptions="EndAndExpand" VerticalOptions="End" Text="{Binding CogIcon}" Command="{Binding SettingsCommand}" TextColor="DeepSkyBlue" BackgroundColor="Transparent" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" WidthRequest="50" FontSize="26"/>
+			</StackLayout>
+			
+			<!--Modal background-->
+			<BoxView IsVisible="{Binding ModalBgVisible}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" BackgroundColor="SkyBlue" Opacity="0.2" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+				<BoxView.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
+				</BoxView.GestureRecognizers>
+			</BoxView>
+			<!--Modal background-->
+
+			<!--AudioFile menu panel-->
+			<services:CustomAbsoluteLayout IsVisible="True" IsEnabled="{Binding ModalNewPlaylistEnabled}" 
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,ElementName=RootPageMainContent, Property=Width, Factor=0.87}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Height, Factor=0.21}"  
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Width, Factor=0.06 }">
+				<AbsoluteLayout.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
+				</AbsoluteLayout.GestureRecognizers>
+				<Frame BorderColor="DeepSkyBlue" Padding="10">
+					<StackLayout Orientation="Vertical" BackgroundColor="White" HorizontalOptions="FillAndExpand" WidthRequest="270"
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, ElementName=RootPageMainContent, Property=Width, Factor=0.8}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Height, Factor=0.21}"  
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Width, Factor=0.06 }">
+						<Label Text="Name of playlist" HorizontalTextAlignment="Center" FontSize="18" Margin="0,0,0,15"/>
+						<Label VerticalTextAlignment="Center" HorizontalTextAlignment="Start"
+							   Text="This name is already taken" FontSize="10" 
+							   TextColor="{Binding ErrorDublicateMessageColor}"/>
+						<Frame Padding="1" BorderColor="{Binding PlaylistNameFrameColor}" >
+							<Entry HeightRequest="50" Text="{Binding PlaylistNameText}"/>
+						</Frame>
+						<StackLayout Orientation="Horizontal" Margin="0,15,0,0">
+							<Button HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="Close" TextColor="DeepSkyBlue" BackgroundColor="Transparent"
+									FontSize="14" Command="{Binding CloseModalCommand}" CommandParameter="close"/>
+							<Button HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Ok" TextColor="DeepSkyBlue" BackgroundColor="Transparent" FontSize="14"
+									Command="{Binding CloseModalCommand}" CommandParameter="add_ok"/>
+						</StackLayout>
+					</StackLayout>
+				</Frame>
+			</services:CustomAbsoluteLayout>
+			<!--AudioFile menu panel-->
+			<!--AudioFile menu panel-->
+			<services:CustomAbsoluteLayout IsVisible="True" IsEnabled="{Binding WarningModalVisible}"
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,ElementName=RootPageMainContent, Property=Width, Factor=0.87}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Height, Factor=0.21}"  
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Width, Factor=0.06 }">
+				<AbsoluteLayout.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
+				</AbsoluteLayout.GestureRecognizers>
+				<Frame BorderColor="OrangeRed" Padding="10">
+					<StackLayout Orientation="Vertical" BackgroundColor="White" HorizontalOptions="FillAndExpand" WidthRequest="270"
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, ElementName=RootPageMainContent, Property=Width, Factor=0.8}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Height, Factor=0.21}"  
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Width, Factor=0.06 }">
+						<Label Text="{Binding WarningModalHeader}" HorizontalTextAlignment="Center" FontSize="18" Margin="0,0,0,15"/>
+						<Label Text="{Binding WarningModalMessage}" HorizontalTextAlignment="Center" FontSize="14" Margin="0,0,0,0" TextColor="OrangeRed"/>
+						<StackLayout Orientation="Horizontal" Margin="0,5,0,0">
+							<Button HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="Close" TextColor="DeepSkyBlue" BackgroundColor="Transparent"
+									FontSize="14" Command="{Binding CloseModalCommand}" CommandParameter="close"/>
+							<Button HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Ok" TextColor="DeepSkyBlue" BackgroundColor="Transparent" FontSize="14"
+									Command="{Binding CloseModalCommand}" CommandParameter="remove_ok"/>
+						</StackLayout>
+					</StackLayout>
+				</Frame>
+			</services:CustomAbsoluteLayout>
+			<!--AudioFile menu panel-->
+		</RelativeLayout>
+	</ContentPage.Content>
+</ContentPage>
