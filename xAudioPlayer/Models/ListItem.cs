@@ -1,4 +1,6 @@
-﻿namespace xAudioPlayer.Models {
+﻿using Xamarin.Forms;
+
+namespace xAudioPlayer.Models {
 	/// <summary>
 	/// Base class of collection item 
 	/// </summary>

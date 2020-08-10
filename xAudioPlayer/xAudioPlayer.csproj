@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NAudio" Version="1.10.0" />
     <PackageReference Include="Plugin.MediaManager" Version="0.9.6" />
     <PackageReference Include="TagLibSharp" Version="2.2.0" />
     <PackageReference Include="Xamarin.Forms" Version="4.7.0.1239" />  

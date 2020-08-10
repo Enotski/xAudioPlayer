@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Xamarin.Forms;
 using xAudioPlayer.Views;
 
@@ -14,7 +13,7 @@ namespace xAudioPlayer {
 				"IndicatorView_Experimental",
 			});
 			var rootPage = new RootPage();
-			MainPage = new PlaylistPage();
+			MainPage = rootPage;
 			MessagingCenter.Subscribe<EventArgs>(this, "OpenMenu", args =>
 			{
 				rootPage.IsPresented = true;

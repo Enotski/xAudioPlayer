@@ -1,9 +1,6 @@
-﻿using NAudio.MediaFoundation;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -97,10 +94,15 @@ namespace xAudioPlayer.ViewModels {
 				execute: async (object args) => {
 					var item = args as MasterPageItem;
 					if (item != null) {
-						var page = (Page)Activator.CreateInstance(item.TargetPage);
 						MessagingCenter.Send(EventArgs.Empty, "CloseMenu");
-						await Navigation.PushModalAsync(page, true);
-						RefreshPlaylistCollection();
+						if (item.Parameter == "Player") {
+							MessagingCenter.Send(EventArgs.Empty, "SetPlayerPage");
+						} else if (item.Parameter == "Favorite") {
+							MessagingCenter.Send(EventArgs.Empty, "SetPlaylistPage");
+						} else if (item.Parameter == "Queue") {
+							var page = (Page)Activator.CreateInstance(item.TargetPage);
+							await Navigation.PushModalAsync(page, true);
+						}
 					}
 				});
 			PlaylistItemSelectedCommand = new Command(
@@ -108,6 +110,7 @@ namespace xAudioPlayer.ViewModels {
 					var item = args as MasterPageItem;
 					if (item != null) {
 						MessagingCenter.Send(EventArgs.Empty, "CloseMenu");
+						MessagingCenter.Send(EventArgs.Empty, "SetPlaylistPage");
 					}
 				});
 		}
@@ -228,7 +231,7 @@ namespace xAudioPlayer.ViewModels {
 				MasterItemsList = new ObservableCollection<MasterPageItem>() {
 					new MasterPageItem{ Title="Main", Icon = Constants.Icons["mdi-home-outline"], TargetPage=typeof(MainCarouselPage), Parameter="Player" },
 					new MasterPageItem{ Title="Favorite", Icon = Constants.Icons["mdi-heart-outline"], TargetPage=typeof(MainCarouselPage), Parameter="Favorite" },
-					new MasterPageItem{ Title="Queue", Icon = Constants.Icons["mdi-format-list-numbered"], TargetPage=typeof(QueuePage)},
+					new MasterPageItem{ Title="Queue", Icon = Constants.Icons["mdi-format-list-numbered"], TargetPage=typeof(QueuePage), Parameter="Queue"},
 				};
 			});
 		}

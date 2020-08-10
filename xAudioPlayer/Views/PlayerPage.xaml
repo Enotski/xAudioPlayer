@@ -28,7 +28,7 @@
 						Style="{StaticResource ButtonClickStyle}"
 						BorderWidth="0" FontSize="30" WidthRequest="50"	FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 				<StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-					<Label Text="{Binding PlaylistCount}" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+					<Label Text="{Binding PlaylistInfo}" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
 					   FontSize="18" LineBreakMode="TailTruncation" Padding="10,0,5,0" MaxLines="1" HeightRequest="25"
 					   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
 				</StackLayout>

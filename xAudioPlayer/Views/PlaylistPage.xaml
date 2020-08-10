@@ -60,7 +60,7 @@
 						<DataTemplate>
 							<ViewCell>
 								<ContentView>
-									<StackLayout x:Name="Item" Orientation="Horizontal" Margin="5,5,5,5" Spacing="0">
+									<StackLayout x:Name="Item" Orientation="Horizontal" Margin="5,5,5,5" Spacing="0" BackgroundColor="{Binding BgColor}">
 										<CheckBox IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vms:PlaylistViewModel}}, Path=ItemCheckBoxVisible}" IsChecked="{Binding ItemChecked, Mode=TwoWay}" HorizontalOptions="Start" VerticalOptions="Fill"/>
 										<StackLayout Orientation="Vertical" Spacing="0" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Padding="10,0,0,0">
 											<Label Text="{Binding FullNameFormatted}" TextColor="DeepSkyBlue" FontSize="13" LineBreakMode="TailTruncation"
@@ -101,11 +101,11 @@
 						<Label Padding="5,0,0,0" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center" Text="{Binding NameOfCurrentAudioFile}" LineBreakMode="TailTruncation"/>
 						<StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Padding="0,0,5,0">
 							<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" HeightRequest="40" Text="{Binding PrevIcon}" HorizontalOptions="Center" VerticalOptions="Fill"
-							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PrevNextCommand}" CommandParameter="prev"/>
 							<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding PlayIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
-							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PlayPauseCommand}"/>
 							<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding NextIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
-							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PrevNextCommand}" CommandParameter="next"/>
 						</StackLayout>
 					</Grid>
 					<StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Horizontal" HeightRequest="50" Padding="5,0,5,0">

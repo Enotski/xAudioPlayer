@@ -1,20 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "EGg1czuufxma3H6rDiSFenFZJv+rCuL0c5XjSqrqQgsUROZMIyEaox2O5PnsCM9Q6bmyWfH4cISOqHi6EPwhfg==",
+  "dgSpecHash": "b2c6FeA8qJBE5MVNe+kXS2DHNI84/+TUBhmKaCtdmn2AdMuaGorafS/7qs5ky2SJvqLcA2u0uLaTiC5aezplvw==",
   "success": true,
   "projectFilePath": "B:\\WorkShop\\xAudioPlayer\\xAudioPlayer\\xAudioPlayer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\zabig\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\naudio\\1.10.0\\naudio.1.10.0.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\plugin.mediamanager\\0.9.6\\plugin.mediamanager.0.9.6.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.2\\system.runtime.compilerservices.unsafe.4.5.2.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\taglibsharp\\2.2.0\\taglibsharp.2.2.0.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xamarin.essentials\\1.5.3.2\\xamarin.essentials.1.5.3.2.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xamarin.forms\\4.7.0.1239\\xamarin.forms.4.7.0.1239.nupkg.sha512"

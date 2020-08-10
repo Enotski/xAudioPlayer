@@ -1,17 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "q8al65aYX/7+RtPwpno1V4nQ2FsKJzJsXc17u0tzezCi6tgBrdnBFJYsyysA6U8zSkBdsQlBe0P3egQXJyC7VA==",
+  "dgSpecHash": "Kdfozj3cM6VE0w0IVi+K3QxTUUh7HHQEkLfG20/9yDgRRU4IpZ0UGeUov7ahAmqhCT/ecwlj4yOeFBLnTHbgsQ==",
   "success": true,
   "projectFilePath": "B:\\WorkShop\\xAudioPlayer\\xAudioPlayer.Android\\xAudioPlayer.Android.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\zabig\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\naudio\\1.10.0\\naudio.1.10.0.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\plugin.mediamanager\\0.9.6\\plugin.mediamanager.0.9.6.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\plugin.mediamanager.forms\\0.9.6\\plugin.mediamanager.forms.0.9.6.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
-    "C:\\Users\\zabig\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\taglibsharp\\2.2.0\\taglibsharp.2.2.0.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xam.plugins.android.exoplayer\\2.9.8\\xam.plugins.android.exoplayer.2.9.8.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xam.plugins.android.exoplayer.core\\2.9.8\\xam.plugins.android.exoplayer.core.2.9.8.nupkg.sha512",
@@ -59,19 +53,8 @@
     "C:\\Users\\zabig\\.nuget\\packages\\xamarin.android.support.vector.drawable\\28.0.0.3\\xamarin.android.support.vector.drawable.28.0.0.3.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xamarin.android.support.versionedparcelable\\28.0.0.3\\xamarin.android.support.versionedparcelable.28.0.0.3.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xamarin.android.support.viewpager\\28.0.0.3\\xamarin.android.support.viewpager.28.0.0.3.nupkg.sha512",
-    "C:\\Microsoft\\Xamarin\\NuGet\\xamarin.essentials\\1.3.1\\xamarin.essentials.1.3.1.nupkg.sha512",
+    "C:\\Users\\zabig\\.nuget\\packages\\xamarin.essentials\\1.5.3.2\\xamarin.essentials.1.5.3.2.nupkg.sha512",
     "C:\\Users\\zabig\\.nuget\\packages\\xamarin.forms\\4.7.0.1239\\xamarin.forms.4.7.0.1239.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1605",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Обнаружено понижение версии пакета Xamarin.Essentials с 1.5.3.2 на 1.3.1. Чтобы выбрать другую версию, создайте ссылку на пакет напрямую из проекта. \r\n xAudioPlayer.Android -> xAudioPlayer -> Xamarin.Essentials (>= 1.5.3.2) \r\n xAudioPlayer.Android -> Xamarin.Essentials (>= 1.3.1)",
-      "libraryId": "Xamarin.Essentials",
-      "targetGraphs": [
-        "MonoAndroid,Version=v9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

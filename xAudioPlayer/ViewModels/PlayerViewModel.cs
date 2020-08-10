@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using xAudioPlayer.Models;
 using xAudioPlayer.Repositories;
 using xAudioPlayer.Services;
+using MediaManager;
 
 namespace xAudioPlayer.ViewModels {
 	/// <summary>
@@ -16,9 +19,10 @@ namespace xAudioPlayer.ViewModels {
 			One,
 			All
 		}
+		bool _paused;
 		double _audioFileProgressValue;
 		double _audioFileDurationValue = 124;
-		string _playlistCount = "100 / 200";
+		string _playlistInfo = "100 / 200";
 		string _currentAudioFileName = "CurrentTrackName - CurrentAuthorName";
 		TimeSpan _audioFileProgress;
 		TimeSpan _audioFileDuration = TimeSpan.FromSeconds(124);
@@ -33,8 +37,9 @@ namespace xAudioPlayer.ViewModels {
 		Color _shuffleBtnColor = Color.CadetBlue;
 		Color _repeatBtnColor = Color.CadetBlue;
 		AudioFile _currentAudioFile;
+		string _currentPlayListName;
 
-		public static PlaylistRepository PlaylistRepository = PlaylistRepository.GetInstance();
+		public static PlaylistRepository _plRepo = PlaylistRepository.GetInstance();
 
 		public string PrevIcon { get; } = Constants.Icons["mdi-chevron-left"];
 		public string NextIcon { get; } = Constants.Icons["mdi-chevron-right"];
@@ -45,6 +50,11 @@ namespace xAudioPlayer.ViewModels {
 		public Rectangle AudioFileMenuLocation { get; } = new Rectangle(10, 1, 1, 1);
 
 		public PlayerViewModel(INavigation nav) : base(nav) {
+			_plRepo.OnPlaylistsCollectionRefreshed += PlaylistsCollectionRefreshed;
+			_plRepo.OnAudioFileChanged += AudioFileChanged;
+			_plRepo.OnCurrentPlaylistRefreshed += PlayListRefreshed;
+			_plRepo.OnPLayPauseAudioFile += PlayPauseAudioFile;
+
 			MenuCommand = new Command(
 				execute: () => {
 					MessagingCenter.Send(EventArgs.Empty, "OpenMenu");
@@ -60,15 +70,16 @@ namespace xAudioPlayer.ViewModels {
 					RepeatBtnColor = _repeatType == RepeatTypeEnum.None ? Color.CadetBlue : Color.DeepSkyBlue;
 					RepeatIcon = _repeatType == RepeatTypeEnum.None ? Constants.Icons["mdi-repeat-off"] : _repeatType == RepeatTypeEnum.One ? Constants.Icons["mdi-repeat-once"] : Constants.Icons["mdi-repeat"];
 				});
-			PlayPauseCommand = new Command(
-				execute: () => {
-				});
 			AudioFileMenuCommand = new Command(
 				execute: () => {
-					QueueAddBtnText = $"{(PlaylistRepository.Playlists["Queue"].Any(x => x.FullPath == CurrentAudioFile.FullPath) ? "Remove form queue" : "Add to queue")}";
-					FavoriteAddBtnText = $"{(PlaylistRepository.Playlists["Favorite"].Any(x => x.FullPath == CurrentAudioFile.FullPath) ? "Remove form favorite" : "Add to favorite")}";
+					QueueAddBtnText = $"{(_plRepo.Playlists["Queue"].Any(x => x.FullPath == CurrentAudioFile.FullPath) ? "Remove form queue" : "Add to queue")}";
+					FavoriteAddBtnText = $"{(_plRepo.Playlists["Favorite"].Any(x => x.FullPath == CurrentAudioFile.FullPath) ? "Remove form favorite" : "Add to favorite")}";
 					AudioFileMenuVisible = !AudioFileMenuVisible;
 					ModalBackgroundVisible = !ModalBackgroundVisible;
+				});
+			PlayPauseCommand = new Command(
+				execute: async () => {
+					await CrossMediaManager.Current.PlayPause();
 				});
 			ChangeAudioFileCommand = new Command(
 				execute: (object args) => {
@@ -85,28 +96,28 @@ namespace xAudioPlayer.ViewModels {
 					AudioFileMenuVisible = false;
 					ModalBackgroundVisible = false;
 				});
-
 			AddCommand = new Command(
 				execute: async (object args) => {
-					//await Task.Run(() => {
-					//	if (args.ToString() == "Queue" && PlaylistRepository.Playlists["Queue"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
-					//		PlaylistRepository.RemoveFromPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
-					//	} else if (args.ToString() == "Favorite" && PlaylistRepository.Playlists["Favorite"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
-					//		PlaylistRepository.RemoveFromPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
-					//	} else {
-					//		PlaylistRepository.AddToPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
-					//	}
-					//});
+					await Task.Run(() => {
+						if (args.ToString() == "Queue" && _plRepo.Playlists["Queue"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
+							_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
+						} else if (args.ToString() == "Favorite" && _plRepo.Playlists["Favorite"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
+							_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
+						} else {
+							_plRepo.AddToPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
+						}
+					});
 					AudioFileMenuVisible = false;
 					ModalBackgroundVisible = false;
 				});
 			RemoveCommand = new Command(
 				execute: (object args) => {
-					//PlaylistRepository.RemoveItems(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
+					_plRepo.RemoveItems(args.ToString() == "Directory", new List<string>() { CurrentAudioFile?.FullPath });
 					ModalBackgroundVisible = false;
 					AudioFileMenuVisible = false;
 				});
 		}
+
 		/// <summary>
 		/// Open master page
 		/// </summary>
@@ -152,9 +163,9 @@ namespace xAudioPlayer.ViewModels {
 		/// </summary>
 		public ICommand RemoveCommand { private set; get; }
 
-		public string PlaylistCount {
-			set { SetProperty(ref _playlistCount, value); }
-			get { return _playlistCount; }
+		public string PlaylistInfo {
+			set { SetProperty(ref _playlistInfo, value); }
+			get { return _playlistInfo; }
 		}
 		public string CurrentAudioFileName {
 			set { SetProperty(ref _currentAudioFileName, value); }
@@ -214,6 +225,36 @@ namespace xAudioPlayer.ViewModels {
 		public string FavoriteAddBtnText {
 			set { SetProperty(ref _favoriteAddBtnText, value); }
 			get { return _favoriteAddBtnText; }
+		}
+		private async void AudioFileChanged(AudioFile file) {
+			if (file != null) {
+				CurrentAudioFile = file;
+				await CrossMediaManager.Current.Play(file.FullPath);
+				UpdatePlInfo();
+			}
+		}
+		private async void PlaylistsCollectionRefreshed() {
+			await Task.Run(() => {
+				UpdatePlInfo();
+			});
+		}
+		private async void PlayPauseAudioFile(AudioFile file = null) {
+			if (file != null) {
+				CurrentAudioFile = file;
+				await CrossMediaManager.Current.Play(file.FullPath);
+			}
+			await CrossMediaManager.Current.PlayPause();
+		}
+
+		private async void PlayListRefreshed() {
+			await Task.Run(() => {
+				UpdatePlInfo();
+			});
+		}
+		private void UpdatePlInfo() {
+			if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
+				CrossMediaManager.Current.Stop();
+			PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
 		}
 	}
 }

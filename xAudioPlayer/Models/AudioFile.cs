@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MediaManager.Library;
+using System;
 using System.ComponentModel;
+using Xamarin.Forms;
 using xAudioPlayer.Services;
 
 namespace xAudioPlayer.Models {
@@ -9,6 +11,7 @@ namespace xAudioPlayer.Models {
 	public class AudioFile : ListItem, INotifyPropertyChanged {
 		bool _itemChecked;
 		int _num;
+		Color _bgColor = Color.Transparent;
 
 		public string NumFormatted { get => Num > 9 ? Num.ToString() : "0" + Num.ToString(); }
 		public string FolderName { get; set; }
@@ -37,9 +40,16 @@ namespace xAudioPlayer.Models {
 					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemChecked"));
 				}
 			}
-			get {
-				return _itemChecked;
+			get => _itemChecked;
+		}
+		public Color BgColor {
+			set {
+				if (_bgColor != value) {
+					_bgColor = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BgColor"));
+				}
 			}
+			get => _bgColor;
 		}
 
 		public event PropertyChangedEventHandler PropertyChanged;

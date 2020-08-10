@@ -20,7 +20,7 @@ namespace xAudioPlayer.Views {
         private global::Xamarin.Forms.ContentPage PlayerContent;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
-        private global::Xamarin.Forms.StackLayout PlayerContentGrid;
+        private global::Xamarin.Forms.StackLayout PlayerContentStackLayout;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "2.0.0.0")]
         private global::Xamarin.Forms.ContentPage PlaylistContent;
@@ -35,7 +35,7 @@ namespace xAudioPlayer.Views {
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MainCarouselPage));
             PlayerContent = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentPage>(this, "PlayerContent");
-            PlayerContentGrid = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "PlayerContentGrid");
+            PlayerContentStackLayout = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "PlayerContentStackLayout");
             PlaylistContent = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ContentPage>(this, "PlaylistContent");
             PlaylistContentGrid = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Grid>(this, "PlaylistContentGrid");
             PagePlaylist = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ListView>(this, "PagePlaylist");

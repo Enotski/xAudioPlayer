@@ -1,13 +1,7 @@
-﻿using MediaManager;
+﻿
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using xAudioPlayer.Models;
 using xAudioPlayer.ViewModels;
 
 namespace xAudioPlayer.Views {
@@ -18,6 +12,15 @@ namespace xAudioPlayer.Views {
 			PlayerContent.BindingContext = new PlayerViewModel(Navigation);
 			PlaylistContent.BindingContext = new PlaylistViewModel(Navigation);
 			NavigationPage.SetHasNavigationBar(this, false);
+
+			MessagingCenter.Subscribe<EventArgs>(this, "SetPlayerPage", args => {
+				if (this.CurrentPage != this.PlayerContent)
+					this.CurrentPage = this.PlayerContent;
+			});
+			MessagingCenter.Subscribe<EventArgs>(this, "SetPlaylistPage", args => {
+				if (this.CurrentPage != this.PlaylistContent)
+					this.CurrentPage = this.PlaylistContent;
+			});
 		}
 	}
 }

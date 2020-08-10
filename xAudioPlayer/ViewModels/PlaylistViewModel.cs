@@ -16,7 +16,7 @@ namespace xAudioPlayer.ViewModels {
 	public class PlaylistViewModel : BaseViewModel {
 		string _playlistName;
 		string _playlistInfo = "-/-";
-		string _nameOfCurrentAudioFile = "CurrentTrackName - CurrentTrackAuthor";
+		string _nameOfCurrentAudioFile = "-/-";
 		string _searchEntryText;
 		string _queueAddBtnText;
 		string _favoriteAddBtnText;
@@ -41,10 +41,11 @@ namespace xAudioPlayer.ViewModels {
 		string _removeParam;
 		static bool _refreshingPlaylist;
 		AudioFile _selectedItem;
+		AudioFile _currentAudioFile;
 		ButtonClickedTriggerAction _btnClickedTrigger;
 		public ObservableListCollection<AudioFile> _currentPLaylist = new ObservableListCollection<AudioFile>();
 
-		public static PlaylistRepository PlaylistRepository = PlaylistRepository.GetInstance();
+		PlaylistRepository _plRepo = PlaylistRepository.GetInstance();
 
 		public string MenuIcon { get; } = Constants.Icons["mdi-menu"];
 		public string PrevIcon { get; } = Constants.Icons["mdi-chevron-left"];
@@ -60,27 +61,28 @@ namespace xAudioPlayer.ViewModels {
 		public string CheckIcon { get; } = Constants.Icons["mdi-check-outline"];
 
 		public ObservableListCollection<AudioFile> CurrentPLaylist {
-			get {
-				return _currentPLaylist;
-			}
+			get => _currentPLaylist;
 			set {
 				SetProperty(ref _currentPLaylist, value);
 			}
 		}
 
 		public PlaylistViewModel(INavigation nav) : base(nav) {
-			CurrentPlaylistName = PlaylistRepository.CurrentPlaylistName;
+			CurrentPlaylistName = _plRepo.CurrentPlaylistName;
 			_btnClickedTrigger = new ButtonClickedTriggerAction(SetAudioFileMenuLocation);
 
-			PlaylistRepository.OnCurrentPlaylistRefreshing += OnCurrentPlaylistRefreshing;
-			PlaylistRepository.OnCurrentPlaylistRefreshed += RefreshCurrentPlaylist;
+			_plRepo.OnCurrentPlaylistRefreshing += CurrentPlaylistRefreshing;
+			_plRepo.OnCurrentPlaylistRefreshed += CurrentPlaylistRefreshed;
+			_plRepo.OnAudioFileChanged += AudioFileChanged;
 
-			_currentPLaylist.OrderChanged += (sender, e) => {
+			_currentPLaylist.CollectionChanged += (sender, e) => {
 				int i = 0;
+				_plRepo.ChnageAudioFilesOrder(e.OldStartingIndex, e.NewStartingIndex);
 				foreach (var item in _currentPLaylist) {
 					item.Num = ++i;
 				}
 			};
+
 
 			PlaylistMenuCommand = new Command(
 				execute: () => {
@@ -92,27 +94,19 @@ namespace xAudioPlayer.ViewModels {
 					AudioFileMenuVisible = !AudioFileMenuVisible;
 					ModalBackgroundVisible = !ModalBackgroundVisible;
 					_selectedItem = item as AudioFile;
-					QueueAddBtnText = $"{(PlaylistRepository.Playlists["Queue"].Any(x => x.FullPath == _selectedItem.FullPath) ? "Remove form queue" : "Add to queue")}";
-					FavoriteAddBtnText = $"{(PlaylistRepository.Playlists["Favorite"].Any(x => x.FullPath == _selectedItem.FullPath) ? "Remove form favorite" : "Add to favorite")}";
+					QueueAddBtnText = $"{(_plRepo.Playlists["Queue"].Any(x => x.FullPath == _selectedItem.FullPath) ? "Remove form queue" : "Add to queue")}";
+					FavoriteAddBtnText = $"{(_plRepo.Playlists["Favorite"].Any(x => x.FullPath == _selectedItem.FullPath) ? "Remove form favorite" : "Add to favorite")}";
 				});
 			AudioFileSelectedCommand = new Command(
 				execute: (object obj) => {
-					var r = obj;
+					_plRepo.PlayPauseAudioFile((obj as AudioFile)?.FullPath);
 				});
 			AddCommand = new Command(
 				execute: async (object obj) => {
 					if (obj == null) {
 						await Navigation.PushModalAsync(new FileBrowserPage(), true);
 					} else {
-						await Task.Run(() => {
-							if (obj.ToString() == "Queue" && PlaylistRepository.Playlists["Queue"].Any(x => x.FullPath == _selectedItem.FullPath)) {
-								PlaylistRepository.RemoveFromPlayList(obj.ToString(), new List<string>() { _selectedItem.FullPath });
-							} else if (obj.ToString() == "Favorite" && PlaylistRepository.Playlists["Favorite"].Any(x => x.FullPath == _selectedItem.FullPath)) {
-								PlaylistRepository.RemoveFromPlayList(obj.ToString(), new List<string>() { _selectedItem.FullPath });
-							} else {
-								PlaylistRepository.AddToPlayList(obj.ToString(), new List<string>() { _selectedItem.FullPath });
-							}
-						});
+						AddAudioFile(obj.ToString());
 						AudioFileMenuVisible = false;
 						ModalBackgroundVisible = false;
 					}
@@ -193,7 +187,7 @@ namespace xAudioPlayer.ViewModels {
 				execute: async (object obj) => {
 					PlaylistMenuVisible = false;
 					await Task.Run(() => {
-						PlaylistRepository.RefreshCurrentPlaylistByStorage(CurrentPLaylist.Select(x => x.FullPath));
+						_plRepo.RefreshCurrentPlaylistByStorage(CurrentPLaylist.Select(x => x.FullPath));
 					});
 				});
 			SortByCommand = new Command(
@@ -219,6 +213,15 @@ namespace xAudioPlayer.ViewModels {
 			MenuCommand = new Command(
 				execute: () => {
 					MessagingCenter.Send(EventArgs.Empty, "OpenMenu");
+				});
+
+			PlayPauseCommand = new Command(
+				execute: () => {
+					_plRepo.PlayPauseAudioFile();
+				});
+			PrevNextCommand = new Command(
+				execute: (object args) => {
+					ChangeAudioFile(args.ToString());
 				});
 		}
 
@@ -397,9 +400,7 @@ namespace xAudioPlayer.ViewModels {
 			get { return _audioFileMenuLocation; }
 		}
 		public AudioFile SelectedItem {
-			get {
-				return _selectedItem;
-			}
+			get => _selectedItem;
 			set {
 				_selectedItem = value;
 
@@ -423,53 +424,50 @@ namespace xAudioPlayer.ViewModels {
 		/// </summary>
 		public async void ClearCurrentPlaylist() {
 			await Task.Run(() => {
-				CurrentPLaylist.Clear();
-				PlaylistRepository.RemoveItems(false);
+				_plRepo.RemoveItems(false);
 			});
 		}
 		/// <summary>
 		/// Show modal bg and busy indicator
 		/// </summary>
-		public void OnCurrentPlaylistRefreshing() {
-			_refreshingPlaylist = true;
-			ModalBackgroundVisible = _refreshingPlaylist;
-			ActivityIndicatorVisible = _refreshingPlaylist;
+		public async void CurrentPlaylistRefreshing() {
+			await Task.Run(() => {
+				_refreshingPlaylist = true;
+				ModalBackgroundVisible = _refreshingPlaylist;
+				ActivityIndicatorVisible = _refreshingPlaylist;
+			});
 		}
 		/// <summary>
 		/// Hide modal bg and busy indicator
 		/// </summary>
-		public void OnCurrentPlaylistRefreshed() {
-			_refreshingPlaylist = false;
-			ModalBackgroundVisible = _refreshingPlaylist;
-			ActivityIndicatorVisible = _refreshingPlaylist;
+		public async void CurrentPlaylistRefreshed() {
+			await Task.Run(() => {
+				RefreshCurrentPlaylist();
+			}).ContinueWith((args) => {
+				_refreshingPlaylist = false;
+				ModalBackgroundVisible = _refreshingPlaylist;
+				ActivityIndicatorVisible = _refreshingPlaylist;
+			});
 		}
 		/// <summary>
 		/// Refresh current playlist from plRepo
 		/// </summary>
-		public async void RefreshCurrentPlaylist() {
+		public void RefreshCurrentPlaylist() {
 			try {
-				await Task.Run(() => {
-					Sorting(SortType, SortReverseToggled);
-					CurrentPLaylist.Clear();
-					foreach (var item in PlaylistRepository.Playlists[CurrentPlaylistName].Select((x, i) => { x.Num = ++i; return x; }))
-						CurrentPLaylist.Add(item);
-				}).ContinueWith((arg) => {
-					var totalDuration = new TimeSpan(CurrentPLaylist.Sum(r => r.Duration.Ticks));
-					PlaylistInfo = $"{CurrentPLaylist.Count} / {totalDuration:hh\\:mm\\:ss} / {Utilities.SizeSuffix(CurrentPLaylist.Sum(x => x.Size), 2)}";
-					OnCurrentPlaylistRefreshed();
-				});
-			} catch { }
+				CurrentPLaylist.Clear();
+				foreach (var item in _plRepo.Playlists[CurrentPlaylistName].Select((x, i) => { x.Num = ++i; return x; }))
+					CurrentPLaylist.Add(item);
+
+				var totalDuration = new TimeSpan(CurrentPLaylist.Sum(r => r.Duration.Ticks));
+				PlaylistInfo = $"{CurrentPLaylist.Count} / {totalDuration:hh\\:mm\\:ss} / {Utilities.SizeSuffix(CurrentPLaylist.Sum(x => x.Size), 2)}";
+			} catch (Exception ex) { }
 		}
 		/// <summary>
 		/// Remove audio files from pl/dir
 		/// </summary>
 		public async void RemoveAudioFiles() {
 			try {
-				await Task.Run(() => {
-					PlaylistRepository.RemoveItems(_removeParam == "Directory", CurrentPLaylist.Where(x => x.ItemChecked).Select(x => x.FullPath));
-					OnCurrentPlaylistRefreshing();
-					RefreshCurrentPlaylist();
-				});
+				await Task.Run(() => { _plRepo.RemoveItems(_removeParam == "Directory", CurrentPLaylist.Where(x => x.ItemChecked).Select(x => x.FullPath)); });
 			} catch { }
 		}
 		/// <summary>
@@ -482,10 +480,10 @@ namespace xAudioPlayer.ViewModels {
 				await Task.Run(() => {
 					CurrentPLaylist.Clear();
 					if (string.IsNullOrWhiteSpace(text)) {
-						foreach (var item in PlaylistRepository.Playlists[CurrentPlaylistName].Select((x, i) => { x.Num = ++i; return x; }))
+						foreach (var item in _plRepo.Playlists[CurrentPlaylistName].Select((x, i) => { x.Num = ++i; return x; }))
 							CurrentPLaylist.Add(item);
 					} else {
-						foreach (var item in PlaylistRepository.Playlists[CurrentPlaylistName].Where(x => x.Name.ToLower().Trim().Contains(text)).Select((x, i) => { x.Num = ++i; return x; })) {
+						foreach (var item in _plRepo.Playlists[CurrentPlaylistName].Where(x => x.Name.ToLower().Trim().Contains(text)).Select((x, i) => { x.Num = ++i; return x; })) {
 							CurrentPLaylist.Add(item);
 						}
 					}
@@ -493,41 +491,42 @@ namespace xAudioPlayer.ViewModels {
 			} catch { }
 		}
 		/// <summary>
-		/// Sort current pl
-		/// </summary>
-		/// <param name="type">Name/duration</param>
-		/// <param name="desc">By descending</param>
-		public void Sorting(string type, bool desc) {
-			switch (type) {
-				case "Name": {
-					PlaylistRepository.Playlists[CurrentPlaylistName] = desc ?
-																PlaylistRepository.Playlists[CurrentPlaylistName].OrderByDescending(x => x.Name).ToList() :
-																PlaylistRepository.Playlists[CurrentPlaylistName].OrderBy(x => x.Name).ToList();
-					break;
-				}
-				case "Duration": {
-					PlaylistRepository.Playlists[CurrentPlaylistName] = desc ?
-										PlaylistRepository.Playlists[CurrentPlaylistName].OrderByDescending(x => x.Duration).ToList() :
-										PlaylistRepository.Playlists[CurrentPlaylistName].OrderBy(x => x.Duration).ToList();
-					break;
-				}
-			}
-		}
-		/// <summary>
 		/// Sort and refresh current playlist
 		/// </summary>
 		public async void SortPlaylist() {
 			try {
+				await Task.Run(() => { _plRepo.SortPlayList(SortType, SortReverseToggled); });
+			} catch { }
+		}
+		async void AudioFileChanged(AudioFile audioFile) {
+			try {
 				await Task.Run(() => {
-					OnCurrentPlaylistRefreshing();
+					//foreach (var item in CurrentPLaylist)
+					//	item.BgColor = Color.Transparent;
 
-					Sorting(SortType, SortReverseToggled);
-					CurrentPLaylist.Clear();
-					foreach (var item in PlaylistRepository.Playlists[CurrentPlaylistName].Select((x, i) => { x.Num = ++i; return x; }))
-						CurrentPLaylist.Add(item);
-
-				}).ContinueWith((arg) => {
-					OnCurrentPlaylistRefreshed();
+					//var file = CurrentPLaylist.FirstOrDefault(x => x.FullPath == audioFile.FullPath);
+					//file.BgColor = Color.SlateBlue;
+					_currentAudioFile = audioFile;
+				});
+			} catch { }
+		}
+		async void AddAudioFile(string args) {
+			try {
+				await Task.Run(() => {
+					if (args.ToString() == "Queue" && _plRepo.Playlists["Queue"].Any(x => x.FullPath == _selectedItem.FullPath)) {
+						_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { _selectedItem.FullPath });
+					} else if (args.ToString() == "Favorite" && _plRepo.Playlists["Favorite"].Any(x => x.FullPath == _selectedItem.FullPath)) {
+						_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { _selectedItem.FullPath });
+					} else {
+						_plRepo.AddToPlayList(args.ToString(), new List<string>() { _selectedItem.FullPath });
+					}
+				});
+			} catch { }
+		}
+		async void ChangeAudioFile(string args) {
+			try {
+				await Task.Run(() => {
+					_plRepo.ChangeAudioFile(_currentAudioFile.FullPath, args == "prev");
 				});
 			} catch { }
 		}

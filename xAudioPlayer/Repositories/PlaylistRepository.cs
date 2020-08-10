@@ -42,6 +42,18 @@ namespace xAudioPlayer.Repositories {
 		public delegate void PlaylistsCollectionRefreshed();
 		public event PlaylistsCollectionRefreshed OnPlaylistsCollectionRefreshed;
 
+		/// <summary>
+		/// Occures when current audio file changed
+		/// </summary>
+		public delegate void AudioFileChanged(AudioFile file);
+		public event AudioFileChanged OnAudioFileChanged;
+
+		/// <summary>
+		/// Occures when playing paused/played
+		/// </summary>
+		public delegate void PLayPauseAudioFile(AudioFile file = null);
+		public event PLayPauseAudioFile OnPLayPauseAudioFile;
+
 		public string CurrentPlaylistName { get; set; }
 		public Dictionary<string, List<AudioFile>> Playlists { get; } = new Dictionary<string, List<AudioFile>>();
 
@@ -49,19 +61,27 @@ namespace xAudioPlayer.Repositories {
 		/// Get data from xml file
 		/// </summary>
 		public async void GetDataFromXml() {
+			try {
 
+			} catch { }
 		}
 		/// <summary>
 		/// Save data to xml file
 		/// </summary>
 		public async void SetDataToXml() {
+			try {
 
+			} catch { }
 		}
 		/// <summary>
 		/// Chnage current playlist
 		/// </summary>
 		public void SetCurrentPlaylist(string name) {
-
+			if (!string.IsNullOrWhiteSpace(name) && Playlists.ContainsKey(name)) {
+				OnCurrentPlaylistRefreshing?.Invoke();
+				CurrentPlaylistName = name;
+				OnCurrentPlaylistRefreshed?.Invoke();
+			}
 		}
 		/// <summary>
 		/// Refresh playlist by storage
@@ -82,6 +102,7 @@ namespace xAudioPlayer.Repositories {
 		public void RemoveItems(bool fromDir, IEnumerable<string> items = null) {
 			try {
 				if (Playlists.ContainsKey(CurrentPlaylistName)) {
+					OnCurrentPlaylistRefreshing?.Invoke();
 					if (items == null)
 						Playlists[CurrentPlaylistName].Clear();
 					else {
@@ -90,6 +111,7 @@ namespace xAudioPlayer.Repositories {
 						if (fromDir)
 							FileBrowser.RemoveFiles(items);
 					}
+					OnCurrentPlaylistRefreshed?.Invoke();
 				}
 			} catch (Exception ex) { }
 		}
@@ -117,6 +139,7 @@ namespace xAudioPlayer.Repositories {
 		/// <param name="itemsPaths">Files paths</param>
 		public void RemoveFromPlayList(string playlistName, IEnumerable<string> itemsPaths) {
 			try {
+				OnCurrentPlaylistRefreshing?.Invoke();
 				if (Playlists.ContainsKey(playlistName)) {
 					foreach (var itemPath in itemsPaths) {
 						try {
@@ -125,7 +148,8 @@ namespace xAudioPlayer.Repositories {
 						} catch (Exception ex) { }
 					}
 				}
-			} catch (Exception ex) { }
+				OnCurrentPlaylistRefreshed?.Invoke();
+			} catch (Exception ex) { OnCurrentPlaylistRefreshed?.Invoke(); }
 		}
 		/// <summary>
 		/// Refresh current playlist
@@ -195,6 +219,64 @@ namespace xAudioPlayer.Repositories {
 					OnPlaylistsCollectionRefreshed?.Invoke();
 				}
 			} catch (Exception ex) { }
+		}
+		/// <summary>
+		/// Sort current pl
+		/// </summary>
+		/// <param name="type">Name/duration</param>
+		/// <param name="desc">By descending</param>
+		public void SortPlayList(string type, bool desc) {
+			OnCurrentPlaylistRefreshing?.Invoke();
+			try {
+				switch (type) {
+					case "Name": {
+						Playlists[CurrentPlaylistName] = desc ?
+													Playlists[CurrentPlaylistName].OrderByDescending(x => x.Name).ToList() :
+													Playlists[CurrentPlaylistName].OrderBy(x => x.Name).ToList();
+						break;
+					}
+					case "Duration": {
+						Playlists[CurrentPlaylistName] = desc ?
+													Playlists[CurrentPlaylistName].OrderByDescending(x => x.Duration).ToList() :
+													Playlists[CurrentPlaylistName].OrderBy(x => x.Duration).ToList();
+						break;
+					}
+				}
+			} catch { }
+			OnCurrentPlaylistRefreshed?.Invoke();
+		}
+		/// <summary>
+		/// Change order of items
+		/// </summary>
+		/// <param name="oldIndex"></param>
+		/// <param name="newIndex"></param>
+		public void ChnageAudioFilesOrder(int oldIndex, int newIndex) {
+			try {
+				var tmp = Playlists[CurrentPlaylistName].ElementAt(oldIndex);
+				Playlists[CurrentPlaylistName].RemoveAt(oldIndex);
+				Playlists[CurrentPlaylistName].Insert(newIndex, tmp);
+			} catch { }
+		}
+		public void PlayPauseAudioFile(string path = null) {
+			try {
+				if (string.IsNullOrWhiteSpace(path))
+					OnPLayPauseAudioFile?.Invoke();
+				else if (Playlists[CurrentPlaylistName].Any(x => x.FullPath == path))
+					OnPLayPauseAudioFile?.Invoke(Playlists[CurrentPlaylistName].FirstOrDefault(x => x.FullPath == path));
+			} catch { }
+		}
+		public void ChangeAudioFile(string filePath, bool prev) {
+			try {
+				if (!string.IsNullOrWhiteSpace(CurrentPlaylistName) && Playlists.ContainsKey(CurrentPlaylistName) && Playlists[CurrentPlaylistName].Any(x => x.FullPath == filePath)) {
+					var file = Playlists[CurrentPlaylistName].FirstOrDefault(x => x.FullPath == filePath);
+					var currIndx = Playlists[CurrentPlaylistName].IndexOf(file);
+
+					currIndx = prev ? (currIndx == -1 || currIndx <= 0 ? Playlists[CurrentPlaylistName].Count - 1 : --currIndx) :
+												 (currIndx == -1 || currIndx >= Playlists[CurrentPlaylistName].Count ? 0 : ++currIndx);
+
+					OnAudioFileChanged?.Invoke(file);
+				}
+			} catch { }
 		}
 	}
 }
