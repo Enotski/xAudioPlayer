@@ -19,11 +19,10 @@ namespace xAudioPlayer.ViewModels {
 			One,
 			All
 		}
-		bool _paused;
 		double _audioFileProgressValue;
 		double _audioFileDurationValue = 124;
-		string _playlistInfo = "100 / 200";
-		string _currentAudioFileName = "CurrentTrackName - CurrentAuthorName";
+		string _playlistInfo = "-/-";
+		string _currentAudioFileName = "-/-";
 		TimeSpan _audioFileProgress;
 		TimeSpan _audioFileDuration = TimeSpan.FromSeconds(124);
 		string _playIcon = Constants.Icons["mdi-play-outline"];
@@ -37,7 +36,6 @@ namespace xAudioPlayer.ViewModels {
 		Color _shuffleBtnColor = Color.CadetBlue;
 		Color _repeatBtnColor = Color.CadetBlue;
 		AudioFile _currentAudioFile;
-		string _currentPlayListName;
 
 		public static PlaylistRepository _plRepo = PlaylistRepository.GetInstance();
 
@@ -51,7 +49,6 @@ namespace xAudioPlayer.ViewModels {
 
 		public PlayerViewModel(INavigation nav) : base(nav) {
 			_plRepo.OnPlaylistsCollectionRefreshed += PlaylistsCollectionRefreshed;
-			_plRepo.OnAudioFileChanged += AudioFileChanged;
 			_plRepo.OnCurrentPlaylistRefreshed += PlayListRefreshed;
 			_plRepo.OnPLayPauseAudioFile += PlayPauseAudioFile;
 
@@ -83,6 +80,7 @@ namespace xAudioPlayer.ViewModels {
 				});
 			ChangeAudioFileCommand = new Command(
 				execute: (object args) => {
+					ChangeAudioFile(args.ToString());
 				});
 			AudioFileProgressChangedCommand = new Command(
 				execute: () => {
@@ -226,13 +224,6 @@ namespace xAudioPlayer.ViewModels {
 			set { SetProperty(ref _favoriteAddBtnText, value); }
 			get { return _favoriteAddBtnText; }
 		}
-		private async void AudioFileChanged(AudioFile file) {
-			if (file != null) {
-				CurrentAudioFile = file;
-				await CrossMediaManager.Current.Play(file.FullPath);
-				UpdatePlInfo();
-			}
-		}
 		private async void PlaylistsCollectionRefreshed() {
 			await Task.Run(() => {
 				UpdatePlInfo();
@@ -242,8 +233,9 @@ namespace xAudioPlayer.ViewModels {
 			if (file != null) {
 				CurrentAudioFile = file;
 				await CrossMediaManager.Current.Play(file.FullPath);
-			}
-			await CrossMediaManager.Current.PlayPause();
+				UpdatePlInfo();
+			} else
+				await CrossMediaManager.Current.PlayPause();
 		}
 
 		private async void PlayListRefreshed() {
@@ -254,7 +246,16 @@ namespace xAudioPlayer.ViewModels {
 		private void UpdatePlInfo() {
 			if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
 				CrossMediaManager.Current.Stop();
+
+			CurrentAudioFileName = CurrentAudioFile?.Name ?? "-/-";
 			PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
+		}
+		private async void ChangeAudioFile(string args) {
+			try {
+				await Task.Run(() => {
+					_plRepo.ChangeAudioFile(CurrentAudioFile.FullPath, args == "prev");
+				});
+			} catch { }
 		}
 	}
 }

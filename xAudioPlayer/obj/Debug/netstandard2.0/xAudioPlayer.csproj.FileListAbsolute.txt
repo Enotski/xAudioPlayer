@@ -7,8 +7,6 @@ B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\App.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\AudioFileInfoPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\FileBrowserPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\MainCarouselPage.xaml.g.cs
-B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\PlayerPage.xaml.g.cs
-B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\PlaylistPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\QueuePage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\RootPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\RootPageMaster.xaml.g.cs

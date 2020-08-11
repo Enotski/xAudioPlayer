@@ -41,7 +41,6 @@ namespace xAudioPlayer.ViewModels {
 		string _removeParam;
 		static bool _refreshingPlaylist;
 		AudioFile _selectedItem;
-		AudioFile _currentAudioFile;
 		ButtonClickedTriggerAction _btnClickedTrigger;
 		public ObservableListCollection<AudioFile> _currentPLaylist = new ObservableListCollection<AudioFile>();
 
@@ -99,6 +98,8 @@ namespace xAudioPlayer.ViewModels {
 				});
 			AudioFileSelectedCommand = new Command(
 				execute: (object obj) => {
+					UpdateCurentAudioFileInfo();
+
 					_plRepo.PlayPauseAudioFile((obj as AudioFile)?.FullPath);
 				});
 			AddCommand = new Command(
@@ -406,10 +407,7 @@ namespace xAudioPlayer.ViewModels {
 
 				if (_selectedItem == null)
 					return;
-
 				AudioFileSelectedCommand.Execute(_selectedItem);
-
-				SelectedItem = null;
 			}
 		}
 		/// <summary>
@@ -498,17 +496,15 @@ namespace xAudioPlayer.ViewModels {
 				await Task.Run(() => { _plRepo.SortPlayList(SortType, SortReverseToggled); });
 			} catch { }
 		}
-		async void AudioFileChanged(AudioFile audioFile) {
-			try {
-				await Task.Run(() => {
-					//foreach (var item in CurrentPLaylist)
-					//	item.BgColor = Color.Transparent;
-
-					//var file = CurrentPLaylist.FirstOrDefault(x => x.FullPath == audioFile.FullPath);
-					//file.BgColor = Color.SlateBlue;
-					_currentAudioFile = audioFile;
-				});
-			} catch { }
+		void AudioFileChanged(AudioFile audioFile) {
+			UpdateCurentAudioFileInfo();
+			SelectedItem = audioFile;
+		}
+		void UpdateCurentAudioFileInfo() {
+			foreach (var item in CurrentPLaylist)
+				item.BgColor = Color.Transparent;
+			SelectedItem.BgColor = Color.LightGray;
+			NameOfCurrentAudioFile = SelectedItem.Name;
 		}
 		async void AddAudioFile(string args) {
 			try {
@@ -526,7 +522,7 @@ namespace xAudioPlayer.ViewModels {
 		async void ChangeAudioFile(string args) {
 			try {
 				await Task.Run(() => {
-					_plRepo.ChangeAudioFile(_currentAudioFile.FullPath, args == "prev");
+					_plRepo.ChangeAudioFile(SelectedItem.FullPath, args == "prev");
 				});
 			} catch { }
 		}

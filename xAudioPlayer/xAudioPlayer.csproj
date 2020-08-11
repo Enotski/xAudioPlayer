@@ -21,12 +21,6 @@
     <Compile Update="Views\MainCarouselPage.xaml.cs">
       <DependentUpon>MainCarouselPage.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\PlayerPage.xaml.cs">
-      <DependentUpon>PlayerPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\PlaylistPage.xaml.cs">
-      <DependentUpon>PlaylistPage.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,12 +31,6 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\FileBrowserPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\PlayerPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\PlaylistPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\QueuePage.xaml">

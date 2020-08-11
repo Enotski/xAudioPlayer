@@ -272,9 +272,9 @@ namespace xAudioPlayer.Repositories {
 					var currIndx = Playlists[CurrentPlaylistName].IndexOf(file);
 
 					currIndx = prev ? (currIndx == -1 || currIndx <= 0 ? Playlists[CurrentPlaylistName].Count - 1 : --currIndx) :
-												 (currIndx == -1 || currIndx >= Playlists[CurrentPlaylistName].Count ? 0 : ++currIndx);
+												 (currIndx == -1 || currIndx >= Playlists[CurrentPlaylistName].Count -1 ? 0 : ++currIndx);
 
-					OnAudioFileChanged?.Invoke(file);
+					OnAudioFileChanged?.Invoke(Playlists[CurrentPlaylistName].ElementAt(currIndx));
 				}
 			} catch { }
 		}
