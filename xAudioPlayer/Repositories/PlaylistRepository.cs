@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaManager.Player;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,9 @@ namespace xAudioPlayer.Repositories {
 	/// Repository for working with playlists
 	/// </summary>
 	public class PlaylistRepository {
+		RepeatTypeEnum _repeatType = RepeatTypeEnum.None;
+		bool _isShuffle;
+
 		private static PlaylistRepository _instance;
 		private PlaylistRepository() {
 			if (!Playlists.Any()) {
@@ -54,6 +58,18 @@ namespace xAudioPlayer.Repositories {
 		public delegate void PLayPauseAudioFile(AudioFile file = null);
 		public event PLayPauseAudioFile OnPLayPauseAudioFile;
 
+		/// <summary>
+		/// Occures when MediaState updatet 
+		/// </summary>
+		public delegate void MediaStateUpdated(MediaPlayerState state);
+		public event MediaStateUpdated OnMediaStateUpdated;
+
+		/// <summary>
+		/// Occures when MediaState updatet 
+		/// </summary>
+		public delegate void MediaProgressUpdated(TimeSpan progress);
+		public event MediaProgressUpdated OnMediaProgressUpdated;
+
 		public string CurrentPlaylistName { get; set; }
 		public Dictionary<string, List<AudioFile>> Playlists { get; } = new Dictionary<string, List<AudioFile>>();
 
@@ -82,6 +98,9 @@ namespace xAudioPlayer.Repositories {
 				CurrentPlaylistName = name;
 				OnCurrentPlaylistRefreshed?.Invoke();
 			}
+		}
+		public void CurrentAudioProgressUpdated(TimeSpan progress) {
+			OnMediaProgressUpdated?.Invoke(progress);
 		}
 		/// <summary>
 		/// Refresh playlist by storage
@@ -265,17 +284,33 @@ namespace xAudioPlayer.Repositories {
 					OnPLayPauseAudioFile?.Invoke(Playlists[CurrentPlaylistName].FirstOrDefault(x => x.FullPath == path));
 			} catch { }
 		}
-		public void ChangeAudioFile(string filePath, bool prev) {
+
+		public void UpdateMediaPLayerState(MediaPlayerState state) {
+			OnMediaStateUpdated?.Invoke(state);
+		}
+		public void SetShuffle(bool isShuffle) {
+			_isShuffle = isShuffle;
+		}
+		public void ChangeAudioFile(string filePath, bool prev, bool isHandle = false) {
 			try {
+				int currIndx = 0;
 				if (!string.IsNullOrWhiteSpace(CurrentPlaylistName) && Playlists.ContainsKey(CurrentPlaylistName) && Playlists[CurrentPlaylistName].Any(x => x.FullPath == filePath)) {
 					var file = Playlists[CurrentPlaylistName].FirstOrDefault(x => x.FullPath == filePath);
-					var currIndx = Playlists[CurrentPlaylistName].IndexOf(file);
+					currIndx = Playlists[CurrentPlaylistName].IndexOf(file);
 
-					currIndx = prev ? (currIndx == -1 || currIndx <= 0 ? Playlists[CurrentPlaylistName].Count - 1 : --currIndx) :
-												 (currIndx == -1 || currIndx >= Playlists[CurrentPlaylistName].Count -1 ? 0 : ++currIndx);
-
-					OnAudioFileChanged?.Invoke(Playlists[CurrentPlaylistName].ElementAt(currIndx));
+					if (isHandle || !_isShuffle) {
+						currIndx = prev ? (currIndx == -1 || currIndx <= 0 ? Playlists[CurrentPlaylistName].Count - 1 : --currIndx) :
+							(currIndx == -1 || currIndx >= Playlists[CurrentPlaylistName].Count - 1 ? 0 : ++currIndx);
+					} else {
+						var rnd = new Random();
+						int result = 0;
+						do {
+							currIndx = rnd.Next(0, Playlists[CurrentPlaylistName].Count);
+						} while (currIndx == result);
+					}
 				}
+				if (Playlists[CurrentPlaylistName].Any() && Playlists[CurrentPlaylistName].Count > currIndx)
+					OnAudioFileChanged?.Invoke(Playlists[CurrentPlaylistName].ElementAt(currIndx));
 			} catch { }
 		}
 	}

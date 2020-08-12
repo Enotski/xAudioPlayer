@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaManager.Player;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,8 +39,10 @@ namespace xAudioPlayer.ViewModels {
 		bool _sortReverseToggled;
 		string _sortAscDescIcon = Constants.Icons["mdi-sort-ascending"];
 		string _sortType = "Name";
+		string _playPauseIcon = Constants.Icons["mdi-play-outline"];
 		string _removeParam;
 		static bool _refreshingPlaylist;
+		double _audioFileProgressValue = 0;
 		AudioFile _selectedItem;
 		ButtonClickedTriggerAction _btnClickedTrigger;
 		public ObservableListCollection<AudioFile> _currentPLaylist = new ObservableListCollection<AudioFile>();
@@ -48,7 +51,6 @@ namespace xAudioPlayer.ViewModels {
 
 		public string MenuIcon { get; } = Constants.Icons["mdi-menu"];
 		public string PrevIcon { get; } = Constants.Icons["mdi-chevron-left"];
-		public string PlayIcon { get; } = Constants.Icons["mdi-play-outline"];
 		public string NextIcon { get; } = Constants.Icons["mdi-chevron-right"];
 		public string PlusIcon { get; } = Constants.Icons["mdi-plus"];
 		public string MinusIcon { get; } = Constants.Icons["mdi-minus"];
@@ -73,6 +75,8 @@ namespace xAudioPlayer.ViewModels {
 			_plRepo.OnCurrentPlaylistRefreshing += CurrentPlaylistRefreshing;
 			_plRepo.OnCurrentPlaylistRefreshed += CurrentPlaylistRefreshed;
 			_plRepo.OnAudioFileChanged += AudioFileChanged;
+			_plRepo.OnMediaStateUpdated += MediaStateUpdated;
+			_plRepo.OnMediaProgressUpdated += MediaProgressChanged;
 
 			_currentPLaylist.CollectionChanged += (sender, e) => {
 				int i = 0;
@@ -218,11 +222,14 @@ namespace xAudioPlayer.ViewModels {
 
 			PlayPauseCommand = new Command(
 				execute: () => {
-					_plRepo.PlayPauseAudioFile();
+					if (SelectedItem == null)
+						ChangeAudioFile(false);
+					else
+						_plRepo.PlayPauseAudioFile();
 				});
 			PrevNextCommand = new Command(
 				execute: (object args) => {
-					ChangeAudioFile(args.ToString());
+					ChangeAudioFile(true, args.ToString() == "prev");
 				});
 		}
 
@@ -304,6 +311,10 @@ namespace xAudioPlayer.ViewModels {
 		/// </summary>
 		public ICommand ClearCommand { private set; get; }
 
+		public double AudioFileProgressValue {
+			set { SetProperty(ref _audioFileProgressValue, value); }
+			get { return _audioFileProgressValue; }
+		}
 		public string CurrentPlaylistName {
 			set { SetProperty(ref _playlistName, value); }
 			get { return _playlistName; }
@@ -395,6 +406,10 @@ namespace xAudioPlayer.ViewModels {
 		public string SortAscDescIcon {
 			get => _sortAscDescIcon;
 			set { SetProperty(ref _sortAscDescIcon, value); }
+		}
+		public string PlayPauseIcon {
+			get => _playPauseIcon;
+			set { SetProperty(ref _playPauseIcon, value); }
 		}
 		public Rectangle AudioFileMenuLocation {
 			set { SetProperty(ref _audioFileMenuLocation, value); }
@@ -496,8 +511,10 @@ namespace xAudioPlayer.ViewModels {
 				await Task.Run(() => { _plRepo.SortPlayList(SortType, SortReverseToggled); });
 			} catch { }
 		}
+		private void MediaProgressChanged(TimeSpan progress) {
+			AudioFileProgressValue = progress.TotalMinutes / SelectedItem.Duration.TotalMinutes;
+		}
 		void AudioFileChanged(AudioFile audioFile) {
-			UpdateCurentAudioFileInfo();
 			SelectedItem = audioFile;
 		}
 		void UpdateCurentAudioFileInfo() {
@@ -519,12 +536,15 @@ namespace xAudioPlayer.ViewModels {
 				});
 			} catch { }
 		}
-		async void ChangeAudioFile(string args) {
+		async void ChangeAudioFile(bool isHandle, bool prev = false) {
 			try {
 				await Task.Run(() => {
-					_plRepo.ChangeAudioFile(SelectedItem.FullPath, args == "prev");
+					_plRepo.ChangeAudioFile(SelectedItem?.FullPath ?? "", prev, isHandle);
 				});
 			} catch { }
+		}
+		private void MediaStateUpdated(MediaPlayerState state) {
+			PlayPauseIcon = state == MediaPlayerState.Playing ? Constants.Icons["mdi-pause"] : Constants.Icons["mdi-play-outline"];
 		}
 	}
 }

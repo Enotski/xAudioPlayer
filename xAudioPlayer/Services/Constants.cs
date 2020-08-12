@@ -2,6 +2,14 @@
 
 namespace xAudioPlayer.Services {
 	/// <summary>
+	/// Repeat types
+	/// </summary>
+	public enum RepeatTypeEnum {
+		None,
+		One,
+		All
+	}
+	/// <summary>
 	/// Class of constants
 	/// </summary>
 	public static class Constants {

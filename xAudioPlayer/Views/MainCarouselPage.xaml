@@ -44,15 +44,15 @@
 					</Frame>
 					<Label Text="{Binding CurrentAudioFileName}" FontSize="20" HeightRequest="20" Padding="0" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand"/>
 					<StackLayout Orientation="Horizontal">
-						<Label Text="{Binding AudioFileProgress, StringFormat='{0:mm\\:ss}'}" HorizontalTextAlignment="Start" MaxLines="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
-						<Label Text="{Binding AudioFileDuration, StringFormat='{0:mm\\:ss}'}" HorizontalTextAlignment="End" MaxLines="1" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
+						<Label Text="{Binding AudioFileProgressTime, StringFormat='{0:mm\\:ss}'}" HorizontalTextAlignment="Start" MaxLines="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+						<Label Text="{Binding AudioFileDurationTime, StringFormat='{0:mm\\:ss}'}" HorizontalTextAlignment="End" MaxLines="1" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 					</StackLayout>
 					<Slider HeightRequest="50" FlowDirection="LeftToRight" Maximum="{Binding AudioFileDurationValue}" Value="{Binding AudioFileProgressValue}" DragCompletedCommand="{Binding AudioFileProgressChangedCommand}"/>
 				</StackLayout>
 				<StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" Padding="5,5,5,10" HeightRequest="50">
 					<Button TextColor="{Binding ShuffleBtnColor}" Command="{Binding ShuffleCommand}" Text="{Binding ShuffleIcon}" BackgroundColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 					<Button TextColor="DeepSkyBlue" Command="{Binding ChangeAudioFileCommand}" Text="{Binding PrevIcon}" CommandParameter="prev" BackgroundColor="Transparent" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
-					<Button TextColor="DeepSkyBlue" Command="{Binding PlayPauseCommand}" Text="{Binding PlayIcon}"  BackgroundColor="Transparent" HorizontalOptions="CenterAndExpand"	FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
+					<Button TextColor="DeepSkyBlue" Command="{Binding PlayPauseCommand}" Text="{Binding PlayPauseIcon}"  BackgroundColor="Transparent" HorizontalOptions="CenterAndExpand"	FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
 					<Button TextColor="DeepSkyBlue" Command="{Binding ChangeAudioFileCommand}" Text="{Binding NextIcon}" CommandParameter="next" BackgroundColor="Transparent" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
 					<Button TextColor="{Binding RepeatBtnColor}" Command="{Binding RepeatCommand}" Text="{Binding RepeatIcon}"  BackgroundColor="Transparent" HorizontalOptions="EndAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 				</StackLayout>
@@ -178,12 +178,12 @@
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
-							<ProgressBar Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0" Progress="0.4"/>
+							<ProgressBar Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0" Progress="{Binding AudioFileProgressValue}"/>
 							<Label Padding="5,0,0,0" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="{Binding NameOfCurrentAudioFile}" LineBreakMode="TailTruncation"/>
 							<StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Padding="0,0,5,0">
 								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" HeightRequest="40" Text="{Binding PrevIcon}" HorizontalOptions="Center" VerticalOptions="Fill"
 							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PrevNextCommand}" CommandParameter="prev"/>
-								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding PlayIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
+								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding PlayPauseIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
 							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PlayPauseCommand}"/>
 								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding NextIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
 							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PrevNextCommand}" CommandParameter="next"/>

@@ -8,23 +8,20 @@ using xAudioPlayer.Models;
 using xAudioPlayer.Repositories;
 using xAudioPlayer.Services;
 using MediaManager;
+using MediaManager.Playback;
+using MediaManager.Media;
 
 namespace xAudioPlayer.ViewModels {
 	/// <summary>
 	/// VM of player page
 	/// </summary>
 	public class PlayerViewModel : BaseViewModel {
-		enum RepeatTypeEnum {
-			None,
-			One,
-			All
-		}
 		double _audioFileProgressValue;
-		double _audioFileDurationValue = 124;
+		double _audioFileDurationValue = 0.1;
 		string _playlistInfo = "-/-";
 		string _currentAudioFileName = "-/-";
-		TimeSpan _audioFileProgress;
-		TimeSpan _audioFileDuration = TimeSpan.FromSeconds(124);
+		TimeSpan _audioFileProgressTime;
+		TimeSpan _audioFileDurationTime;
 		string _playIcon = Constants.Icons["mdi-play-outline"];
 		string _repeatIcon = Constants.Icons["mdi-repeat"];
 		string _queueAddBtnText;
@@ -52,6 +49,10 @@ namespace xAudioPlayer.ViewModels {
 			_plRepo.OnCurrentPlaylistRefreshed += PlayListRefreshed;
 			_plRepo.OnPLayPauseAudioFile += PlayPauseAudioFile;
 
+			CrossMediaManager.Current.StateChanged += MediaStateChanged;
+			CrossMediaManager.Current.MediaItemFinished += MediaItemFinished;
+			CrossMediaManager.Current.PositionChanged += MediaPositionChanged;
+
 			MenuCommand = new Command(
 				execute: () => {
 					MessagingCenter.Send(EventArgs.Empty, "OpenMenu");
@@ -60,6 +61,7 @@ namespace xAudioPlayer.ViewModels {
 				execute: () => {
 					_isShuffled = !_isShuffled;
 					ShuffleBtnColor = _isShuffled ? Color.DeepSkyBlue : Color.CadetBlue;
+					_plRepo.SetShuffle(_isShuffled);
 				});
 			RepeatCommand = new Command(
 				execute: () => {
@@ -75,19 +77,21 @@ namespace xAudioPlayer.ViewModels {
 					ModalBackgroundVisible = !ModalBackgroundVisible;
 				});
 			PlayPauseCommand = new Command(
-				execute: async () => {
-					await CrossMediaManager.Current.PlayPause();
+				execute: () => {
+					PlayPauseAudioFile();
 				});
 			ChangeAudioFileCommand = new Command(
 				execute: (object args) => {
-					ChangeAudioFile(args.ToString());
+					ChangeAudioFile(true, args.ToString() == "prev");
 				});
 			AudioFileProgressChangedCommand = new Command(
 				execute: () => {
+					CrossMediaManager.Current.SeekTo(TimeSpan.FromMinutes(AudioFileProgressValue));
 				});
 			AudioFileProgressChangingCommand = new Command(
 				execute: (object args) => {
-					AudioFileProgress = TimeSpan.FromSeconds((double)args);
+					AudioFileProgressTime = TimeSpan.FromMinutes((double)args);
+					_plRepo.CurrentAudioProgressUpdated(AudioFileProgressTime);
 				});
 			ModalBackGroundTappedCommand = new Command(
 				execute: () => {
@@ -169,15 +173,15 @@ namespace xAudioPlayer.ViewModels {
 			set { SetProperty(ref _currentAudioFileName, value); }
 			get { return _currentAudioFileName; }
 		}
-		public TimeSpan AudioFileProgress {
-			set { SetProperty(ref _audioFileProgress, value); }
-			get { return _audioFileProgress; }
+		public TimeSpan AudioFileProgressTime {
+			set { SetProperty(ref _audioFileProgressTime, value); }
+			get { return _audioFileProgressTime; }
 		}
-		public TimeSpan AudioFileDuration {
-			set { SetProperty(ref _audioFileDuration, value); }
-			get { return _audioFileDuration; }
+		public TimeSpan AudioFileDurationTime {
+			set { SetProperty(ref _audioFileDurationTime, value); }
+			get { return _audioFileDurationTime; }
 		}
-		public string PlayIcon {
+		public string PlayPauseIcon {
 			set { SetProperty(ref _playIcon, value); }
 			get { return _playIcon; }
 		}
@@ -226,34 +230,63 @@ namespace xAudioPlayer.ViewModels {
 		}
 		private async void PlaylistsCollectionRefreshed() {
 			await Task.Run(() => {
+				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
+					CrossMediaManager.Current.Stop();
 				UpdatePlInfo();
 			});
 		}
 		private async void PlayPauseAudioFile(AudioFile file = null) {
 			if (file != null) {
 				CurrentAudioFile = file;
+				AudioFileDurationTime = CurrentAudioFile.Duration;
+				AudioFileDurationValue = CurrentAudioFile.Duration.TotalMinutes;
 				await CrossMediaManager.Current.Play(file.FullPath);
 				UpdatePlInfo();
-			} else
+			} else if (CurrentAudioFile == null) {
+				ChangeAudioFile(false);
+			} else {
 				await CrossMediaManager.Current.PlayPause();
+			}
 		}
-
+		private async void MediaPositionChanged(object sender, MediaManager.Playback.PositionChangedEventArgs e) {
+			await Task.Run(() => {
+				AudioFileProgressValue = e.Position.TotalMinutes;
+			});
+		}
+		private async void MediaItemFinished(object sender, MediaItemEventArgs e) {
+			if (CrossMediaManager.Current.Position >= CurrentAudioFile.Duration) {
+				if (_repeatType == RepeatTypeEnum.One) {
+					await CrossMediaManager.Current.Play(CurrentAudioFile);
+				} else if (_repeatType == RepeatTypeEnum.None && (_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1 == _plRepo.Playlists[_plRepo.CurrentPlaylistName].Count())) {
+					await CrossMediaManager.Current.SeekToStart().ContinueWith((args) => { CrossMediaManager.Current.Stop(); });
+				} else {
+					ChangeAudioFile(false);
+				}
+			}
+		}
+		private async void MediaStateChanged(object sender, StateChangedEventArgs e) {
+			await Task.Run(() => {
+				PlayPauseIcon = CrossMediaManager.Current.State == MediaManager.Player.MediaPlayerState.Playing ? Constants.Icons["mdi-pause"] : Constants.Icons["mdi-play-outline"];
+				_plRepo.UpdateMediaPLayerState(CrossMediaManager.Current.State);
+			});
+		}
 		private async void PlayListRefreshed() {
 			await Task.Run(() => {
+				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
+					CrossMediaManager.Current.Stop();
 				UpdatePlInfo();
 			});
 		}
-		private void UpdatePlInfo() {
-			if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
-				CrossMediaManager.Current.Stop();
-
-			CurrentAudioFileName = CurrentAudioFile?.Name ?? "-/-";
-			PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
+		private async void UpdatePlInfo() {
+			await Task.Run(() => {
+				CurrentAudioFileName = CurrentAudioFile?.Name ?? "-/-";
+				PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
+			});
 		}
-		private async void ChangeAudioFile(string args) {
+		private async void ChangeAudioFile(bool isHandle, bool prev = false) {
 			try {
 				await Task.Run(() => {
-					_plRepo.ChangeAudioFile(CurrentAudioFile.FullPath, args == "prev");
+					_plRepo.ChangeAudioFile(CurrentAudioFile?.FullPath ?? "", prev, isHandle);
 				});
 			} catch { }
 		}
