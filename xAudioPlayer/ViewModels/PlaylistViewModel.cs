@@ -526,12 +526,12 @@ namespace xAudioPlayer.ViewModels {
 		async void AddAudioFile(string args) {
 			try {
 				await Task.Run(() => {
-					if (args.ToString() == "Queue" && _plRepo.Playlists["Queue"].Any(x => x.FullPath == _selectedItem.FullPath)) {
-						_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { _selectedItem.FullPath });
-					} else if (args.ToString() == "Favorite" && _plRepo.Playlists["Favorite"].Any(x => x.FullPath == _selectedItem.FullPath)) {
-						_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { _selectedItem.FullPath });
+					if (args == "Queue" && _plRepo.Playlists["Queue"].Any(x => x.FullPath == _selectedItem.FullPath)) {
+						_plRepo.RemoveFromPlayList(args, new List<string>() { _selectedItem.FullPath });
+					} else if (args == "Favorite" && _plRepo.Playlists["Favorite"].Any(x => x.FullPath == _selectedItem.FullPath)) {
+						_plRepo.RemoveFromPlayList(args, new List<string>() { _selectedItem.FullPath });
 					} else {
-						_plRepo.AddToPlayList(args.ToString(), new List<string>() { _selectedItem.FullPath });
+						_plRepo.AddToPlayList(args, new List<string>() { _selectedItem.FullPath });
 					}
 				});
 			} catch { }

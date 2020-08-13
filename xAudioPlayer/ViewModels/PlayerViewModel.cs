@@ -10,6 +10,7 @@ using xAudioPlayer.Services;
 using MediaManager;
 using MediaManager.Playback;
 using MediaManager.Media;
+using MediaManager.Library;
 
 namespace xAudioPlayer.ViewModels {
 	/// <summary>
@@ -99,16 +100,8 @@ namespace xAudioPlayer.ViewModels {
 					ModalBackgroundVisible = false;
 				});
 			AddCommand = new Command(
-				execute: async (object args) => {
-					await Task.Run(() => {
-						if (args.ToString() == "Queue" && _plRepo.Playlists["Queue"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
-							_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
-						} else if (args.ToString() == "Favorite" && _plRepo.Playlists["Favorite"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
-							_plRepo.RemoveFromPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
-						} else {
-							_plRepo.AddToPlayList(args.ToString(), new List<string>() { CurrentAudioFile.FullPath });
-						}
-					});
+				execute: (object args) => {
+					AddAudioFile(args.ToString());
 					AudioFileMenuVisible = false;
 					ModalBackgroundVisible = false;
 				});
@@ -251,12 +244,14 @@ namespace xAudioPlayer.ViewModels {
 		private async void MediaPositionChanged(object sender, MediaManager.Playback.PositionChangedEventArgs e) {
 			await Task.Run(() => {
 				AudioFileProgressValue = e.Position.TotalMinutes;
+				if (AudioFileProgressTime > CurrentAudioFile.Duration)
+					MediaItemFinished(this, new MediaItemEventArgs(new MediaItem()));
 			});
 		}
 		private async void MediaItemFinished(object sender, MediaItemEventArgs e) {
-			if (CrossMediaManager.Current.Position >= CurrentAudioFile.Duration) {
+			if (Math.Truncate(CrossMediaManager.Current.Position.TotalMinutes) >= Math.Truncate(CurrentAudioFile.Duration.TotalMinutes)) {
 				if (_repeatType == RepeatTypeEnum.One) {
-					await CrossMediaManager.Current.Play(CurrentAudioFile);
+					await CrossMediaManager.Current.SeekTo(TimeSpan.FromMinutes(0));
 				} else if (_repeatType == RepeatTypeEnum.None && (_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1 == _plRepo.Playlists[_plRepo.CurrentPlaylistName].Count())) {
 					await CrossMediaManager.Current.SeekToStart().ContinueWith((args) => { CrossMediaManager.Current.Stop(); });
 				} else {
@@ -287,6 +282,19 @@ namespace xAudioPlayer.ViewModels {
 			try {
 				await Task.Run(() => {
 					_plRepo.ChangeAudioFile(CurrentAudioFile?.FullPath ?? "", prev, isHandle);
+				});
+			} catch { }
+		}
+		async void AddAudioFile(string args) {
+			try {
+				await Task.Run(() => {
+					if (args == "Queue" && _plRepo.Playlists["Queue"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
+						_plRepo.RemoveFromPlayList(args, new List<string>() { CurrentAudioFile.FullPath });
+					} else if (args == "Favorite" && _plRepo.Playlists["Favorite"].Any(x => x.FullPath == CurrentAudioFile.FullPath)) {
+						_plRepo.RemoveFromPlayList(args, new List<string>() { CurrentAudioFile.FullPath });
+					} else {
+						_plRepo.AddToPlayList(args, new List<string>() { CurrentAudioFile.FullPath });
+					}
 				});
 			} catch { }
 		}
