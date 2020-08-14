@@ -43,17 +43,18 @@ namespace xAudioPlayer.Services {
 		/// <returns>Search result</returns>
 		public static IEnumerable<string> SearchAccessibleDirectoryItemsByFullName(string root, string searchTerm) {
 			var files = new List<string>();
-
-			foreach (var file in Directory.EnumerateFiles(root).Where(m => m.ToLower().Contains(searchTerm))) {
-				files.Add(file);
-			}
-			foreach (var subDir in Directory.EnumerateDirectories(root)) {
-				try {
-					if (subDir.ToLower().Contains(searchTerm))
-						files.Add(subDir);
-					files.AddRange(SearchAccessibleDirectoryItemsByFullName(subDir, searchTerm));
-				} catch (UnauthorizedAccessException ex) { continue; }
-			}
+			try {
+				foreach (var file in Directory.EnumerateFiles(root).Where(m => m.ToLower().Contains(searchTerm))) {
+					files.Add(file);
+				}
+				foreach (var subDir in Directory.EnumerateDirectories(root)) {
+					try {
+						if (subDir.ToLower().Contains(searchTerm))
+							files.Add(subDir);
+						files.AddRange(SearchAccessibleDirectoryItemsByFullName(subDir, searchTerm));
+					} catch (UnauthorizedAccessException ex) { continue; }
+				}
+			} catch{ }
 			return files;
 		}
 		/// <summary>

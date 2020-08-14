@@ -97,6 +97,7 @@ namespace xAudioPlayer.Repositories {
 			if (!string.IsNullOrWhiteSpace(name) && Playlists.ContainsKey(name)) {
 				OnCurrentPlaylistRefreshing?.Invoke();
 				CurrentPlaylistName = name;
+				_playlistAudioFileIndx = 0;
 				OnCurrentPlaylistRefreshed?.Invoke();
 			}
 		}
@@ -236,6 +237,7 @@ namespace xAudioPlayer.Repositories {
 			try {
 				if (!string.IsNullOrWhiteSpace(name) && Playlists.ContainsKey(name) && (name != "Default" || name != "Favorite" || name != "Queue")) {
 					Playlists.Remove(name);
+					SetCurrentPlaylist("Default");
 					OnPlaylistsCollectionRefreshed?.Invoke();
 				}
 			} catch (Exception ex) { }

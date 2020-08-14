@@ -68,7 +68,9 @@ namespace xAudioPlayer.ViewModels {
 				execute: async() => {
 					await Navigation.PopModalAsync(true);
 					await Task.Run(() => {
-						_plRepo.RefreshCurrentPlaylistByStorage(_checkedItems.ToList());
+						try {
+							_plRepo.RefreshCurrentPlaylistByStorage(_checkedItems.ToList());
+						} catch { }
 					});
 				});
 		}
@@ -159,18 +161,20 @@ namespace xAudioPlayer.ViewModels {
 			if (item == null)
 				return;
 			await Task.Run(() => {
-				if (item.ItemChecked) {
-					if (!_checkedItems.Contains(item.FullPath))
-						_checkedItems.Add(item.FullPath);
-				} else {
-					if (_checkedItems.Contains(item.FullPath)) {
-						_checkedItems.Remove(item.FullPath);
-						if (Directory.Exists(item.FullPath)) {
-							foreach (var file in Directory.EnumerateFileSystemEntries(item.FullPath))
-								_checkedItems.Remove(file);
+				try {
+					if (item.ItemChecked) {
+						if (!_checkedItems.Contains(item.FullPath))
+							_checkedItems.Add(item.FullPath);
+					} else {
+						if (_checkedItems.Contains(item.FullPath)) {
+							_checkedItems.Remove(item.FullPath);
+							if (Directory.Exists(item.FullPath)) {
+								foreach (var file in Directory.EnumerateFileSystemEntries(item.FullPath))
+									_checkedItems.Remove(file);
+							}
 						}
 					}
-				}
+				} catch { }			
 			});			
 		}
 	}

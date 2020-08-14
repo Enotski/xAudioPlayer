@@ -73,7 +73,7 @@
 			</BoxView>
 			<!--Modal background-->
 
-			<!--AudioFile menu panel-->
+			<!--Add pl modal-->
 			<services:CustomAbsoluteLayout IsVisible="True" IsEnabled="{Binding ModalNewPlaylistEnabled}" 
 							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,ElementName=RootPageMainContent, Property=Width, Factor=0.87}"
 							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Height, Factor=0.21}"  
@@ -102,8 +102,9 @@
 					</StackLayout>
 				</Frame>
 			</services:CustomAbsoluteLayout>
-			<!--AudioFile menu panel-->
-			<!--AudioFile menu panel-->
+			<!--Add pl modal-->
+			
+			<!--Warning modal-->
 			<services:CustomAbsoluteLayout IsVisible="True" IsEnabled="{Binding WarningModalVisible}"
 							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,ElementName=RootPageMainContent, Property=Width, Factor=0.87}"
 							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=RootPageMainContent, Property=Height, Factor=0.21}"  
@@ -127,7 +128,7 @@
 					</StackLayout>
 				</Frame>
 			</services:CustomAbsoluteLayout>
-			<!--AudioFile menu panel-->
+			<!--Warning modal-->
 		</RelativeLayout>
 	</ContentPage.Content>
 </ContentPage>

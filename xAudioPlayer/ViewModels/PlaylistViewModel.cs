@@ -467,6 +467,7 @@ namespace xAudioPlayer.ViewModels {
 		/// </summary>
 		public void RefreshCurrentPlaylist() {
 			try {
+				CurrentPlaylistName = _plRepo.CurrentPlaylistName;
 				CurrentPLaylist.Clear();
 				foreach (var item in _plRepo.Playlists[CurrentPlaylistName].Select((x, i) => { x.Num = ++i; return x; }))
 					CurrentPLaylist.Add(item);

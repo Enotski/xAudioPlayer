@@ -223,7 +223,7 @@ namespace xAudioPlayer.ViewModels {
 		}
 		private async void PlaylistsCollectionRefreshed() {
 			await Task.Run(() => {
-				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
+				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(CurrentAudioFile))
 					CrossMediaManager.Current.Stop();
 				UpdatePlInfo();
 			});
@@ -252,7 +252,7 @@ namespace xAudioPlayer.ViewModels {
 			if (Math.Truncate(CrossMediaManager.Current.Position.TotalMinutes) >= Math.Truncate(CurrentAudioFile.Duration.TotalMinutes)) {
 				if (_repeatType == RepeatTypeEnum.One) {
 					await CrossMediaManager.Current.SeekTo(TimeSpan.FromMinutes(0));
-				} else if (_repeatType == RepeatTypeEnum.None && (_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1 == _plRepo.Playlists[_plRepo.CurrentPlaylistName].Count())) {
+				} else if (_repeatType == RepeatTypeEnum.None && (_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(CurrentAudioFile) + 1 == _plRepo.Playlists[_plRepo.CurrentPlaylistName].Count())) {
 					await CrossMediaManager.Current.SeekToStart().ContinueWith((args) => { CrossMediaManager.Current.Stop(); });
 				} else {
 					ChangeAudioFile(false);
@@ -267,15 +267,16 @@ namespace xAudioPlayer.ViewModels {
 		}
 		private async void PlayListRefreshed() {
 			await Task.Run(() => {
-				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(_currentAudioFile))
+				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(CurrentAudioFile)) {
 					CrossMediaManager.Current.Stop();
+				}
 				UpdatePlInfo();
 			});
 		}
 		private async void UpdatePlInfo() {
 			await Task.Run(() => {
 				CurrentAudioFileName = CurrentAudioFile?.Name ?? "-/-";
-				PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({_plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(_currentAudioFile) + 1} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
+				PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({ (CurrentAudioFile == null ? 0 : _plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(CurrentAudioFile) + 1)} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
 			});
 		}
 		private async void ChangeAudioFile(bool isHandle, bool prev = false) {

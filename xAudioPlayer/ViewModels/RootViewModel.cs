@@ -109,6 +109,8 @@ namespace xAudioPlayer.ViewModels {
 				execute: (object args) => {
 					var item = args as MasterPageItem;
 					if (item != null) {
+						_plRepo.SetCurrentPlaylist(item.Title);
+
 						MessagingCenter.Send(EventArgs.Empty, "CloseMenu");
 						MessagingCenter.Send(EventArgs.Empty, "SetPlaylistPage");
 					}
