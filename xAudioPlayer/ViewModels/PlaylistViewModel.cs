@@ -45,7 +45,7 @@ namespace xAudioPlayer.ViewModels {
 		double _audioFileProgressValue = 0;
 		AudioFile _selectedItem;
 		ButtonClickedTriggerAction _btnClickedTrigger;
-		public ObservableListCollection<AudioFile> _currentPLaylist = new ObservableListCollection<AudioFile>();
+		ObservableListCollection<AudioFile> _currentPLaylist = new ObservableListCollection<AudioFile>();
 
 		PlaylistRepository _plRepo = PlaylistRepository.GetInstance();
 
@@ -165,11 +165,15 @@ namespace xAudioPlayer.ViewModels {
 					RemoveAudioFiles();
 				});
 			CheckAllCommand = new Command(
-				execute: () => {
-					_allItemsChecked = !CurrentPLaylist.All(x => x.ItemChecked);
-					foreach (var item in CurrentPLaylist) {
-						item.ItemChecked = _allItemsChecked;
-					}
+				execute: async () => {
+					await Task.Run(() => {
+						try {
+							_allItemsChecked = !CurrentPLaylist.All(x => x.ItemChecked);
+							foreach (var item in CurrentPLaylist) {
+								item.ItemChecked = _allItemsChecked;
+							}
+						} catch { }
+					});
 				});
 			SortCommand = new Command(
 				execute: () => {

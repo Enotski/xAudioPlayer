@@ -45,6 +45,7 @@ namespace xAudioPlayer.Services {
 			{"mdi-heart-outline", "\U000F02D5"},
 			{"mdi-playlist-music", "\U000F0CB8"},
 			{"mdi-format-list-numbered", "\U000F027B"},
+			{"mdi-delete-forever-outline", "\U000F0B89"},
 		};
 
 		public static HashSet<string> AudioFileExtensions = new HashSet<string>() {

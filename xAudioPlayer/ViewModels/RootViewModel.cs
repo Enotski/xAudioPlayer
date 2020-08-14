@@ -95,10 +95,9 @@ namespace xAudioPlayer.ViewModels {
 					var item = args as MasterPageItem;
 					if (item != null) {
 						MessagingCenter.Send(EventArgs.Empty, "CloseMenu");
-						if (item.Parameter == "Player") {
-							MessagingCenter.Send(EventArgs.Empty, "SetPlayerPage");
-						} else if (item.Parameter == "Favorite") {
-							MessagingCenter.Send(EventArgs.Empty, "SetPlaylistPage");
+						if (item.Parameter == "Player" || item.Parameter == "Favorite") {
+							MessagingCenter.Send(EventArgs.Empty, item.Parameter == "Player" ? "SetPlayerPage" : "SetPlaylistPage");
+							_plRepo.SetCurrentPlaylist(item.Parameter);
 						} else if (item.Parameter == "Queue") {
 							var page = (Page)Activator.CreateInstance(item.TargetPage);
 							await Navigation.PushModalAsync(page, true);

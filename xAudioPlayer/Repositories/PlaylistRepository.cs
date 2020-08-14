@@ -14,6 +14,7 @@ namespace xAudioPlayer.Repositories {
 		RepeatTypeEnum _repeatType = RepeatTypeEnum.None;
 		bool _isShuffle;
 		int _playlistAudioFileIndx = 0;
+		string _lastSettedPlaylist;
 
 		private static PlaylistRepository _instance;
 		private PlaylistRepository() {
@@ -94,12 +95,16 @@ namespace xAudioPlayer.Repositories {
 		/// Chnage current playlist
 		/// </summary>
 		public void SetCurrentPlaylist(string name) {
-			if (!string.IsNullOrWhiteSpace(name) && Playlists.ContainsKey(name)) {
-				OnCurrentPlaylistRefreshing?.Invoke();
-				CurrentPlaylistName = name;
-				_playlistAudioFileIndx = 0;
-				OnCurrentPlaylistRefreshed?.Invoke();
-			}
+			name = name == "PlayList" ? _lastSettedPlaylist : name;
+			name = !string.IsNullOrWhiteSpace(name) && Playlists.ContainsKey(name) ? name : "Default";
+
+			_lastSettedPlaylist = name != "Favorite" ? name : _lastSettedPlaylist;
+
+			OnCurrentPlaylistRefreshing?.Invoke();
+			CurrentPlaylistName = name;
+			_playlistAudioFileIndx = 0;
+			OnCurrentPlaylistRefreshed?.Invoke();
+
 		}
 		public void CurrentAudioProgressUpdated(TimeSpan progress) {
 			OnMediaProgressUpdated?.Invoke(progress);
@@ -120,6 +125,7 @@ namespace xAudioPlayer.Repositories {
 		/// </summary>
 		/// <param name="type">Directory</param>
 		/// <param name="items">if items is null, then clear collection</param>
+		/// <param name="plName">Playlist name</param>
 		public void RemoveItems(bool fromDir, IEnumerable<string> items = null) {
 			try {
 				if (Playlists.ContainsKey(CurrentPlaylistName)) {
@@ -272,11 +278,13 @@ namespace xAudioPlayer.Repositories {
 		/// </summary>
 		/// <param name="oldIndex"></param>
 		/// <param name="newIndex"></param>
-		public void ChnageAudioFilesOrder(int oldIndex, int newIndex) {
+		public void ChnageAudioFilesOrder(int oldIndex, int newIndex, string plName = "") {
 			try {
-				var tmp = Playlists[CurrentPlaylistName].ElementAt(oldIndex);
-				Playlists[CurrentPlaylistName].RemoveAt(oldIndex);
-				Playlists[CurrentPlaylistName].Insert(newIndex, tmp);
+				var currName = string.IsNullOrWhiteSpace(plName) ? CurrentPlaylistName : plName;
+
+				var tmp = Playlists[currName].ElementAt(oldIndex);
+				Playlists[currName].RemoveAt(oldIndex);
+				Playlists[currName].Insert(newIndex, tmp);
 			} catch { }
 		}
 		public void PlayPauseAudioFile(string path = null) {
