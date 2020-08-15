@@ -34,13 +34,13 @@ namespace xAudioPlayer.Repositories {
 		/// Occures when current playlist collection start changing
 		/// </summary>
 		public delegate void CurrentPlaylistRefreshing();
-		public event CurrentPlaylistRefreshing OnCurrentPlaylistRefreshing;
+		public event CurrentPlaylistRefreshing OnPlaylistRefreshing;
 
 		/// <summary>
 		/// Occures when current playlist collection changed
 		/// </summary>
 		public delegate void CurrentPlaylistRefreshed();
-		public event CurrentPlaylistRefreshed OnCurrentPlaylistRefreshed;
+		public event CurrentPlaylistRefreshed OnPlaylistRefreshed;
 
 		/// <summary>
 		/// Occures when playlist was add/removed from dictionary
@@ -100,10 +100,10 @@ namespace xAudioPlayer.Repositories {
 
 			_lastSettedPlaylist = name != "Favorite" ? name : _lastSettedPlaylist;
 
-			OnCurrentPlaylistRefreshing?.Invoke();
+			OnPlaylistRefreshing?.Invoke();
 			CurrentPlaylistName = name;
 			_playlistAudioFileIndx = 0;
-			OnCurrentPlaylistRefreshed?.Invoke();
+			OnPlaylistRefreshed?.Invoke();
 
 		}
 		public void CurrentAudioProgressUpdated(TimeSpan progress) {
@@ -115,10 +115,10 @@ namespace xAudioPlayer.Repositories {
 		/// <param name="itemsPaths"></param>
 		public void RefreshCurrentPlaylistByStorage(IEnumerable<string> itemsPaths) {
 			try {
-				OnCurrentPlaylistRefreshing?.Invoke();
+				OnPlaylistRefreshing?.Invoke();
 				RefreshPlaylist(itemsPaths);
-				OnCurrentPlaylistRefreshed?.Invoke();
-			} catch (Exception ex) { OnCurrentPlaylistRefreshed?.Invoke(); }
+				OnPlaylistRefreshed?.Invoke();
+			} catch (Exception ex) { OnPlaylistRefreshed?.Invoke(); }
 		}
 		/// <summary>
 		/// Remove items from playlist/directory
@@ -129,7 +129,7 @@ namespace xAudioPlayer.Repositories {
 		public void RemoveItems(bool fromDir, IEnumerable<string> items = null) {
 			try {
 				if (Playlists.ContainsKey(CurrentPlaylistName)) {
-					OnCurrentPlaylistRefreshing?.Invoke();
+					OnPlaylistRefreshing?.Invoke();
 					if (items == null)
 						Playlists[CurrentPlaylistName].Clear();
 					else {
@@ -138,7 +138,7 @@ namespace xAudioPlayer.Repositories {
 						if (fromDir)
 							FileBrowser.RemoveFiles(items);
 					}
-					OnCurrentPlaylistRefreshed?.Invoke();
+					OnPlaylistRefreshed?.Invoke();
 				}
 			} catch (Exception ex) { }
 		}
@@ -152,8 +152,20 @@ namespace xAudioPlayer.Repositories {
 				if (Playlists.ContainsKey(playlistName)) {
 					foreach (var itemPath in itemsPaths) {
 						try {
-							if (File.Exists(itemPath) && !Playlists[playlistName].Any(x => x.FullPath == itemPath) && Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath))
-								Playlists[playlistName].Add(Playlists[CurrentPlaylistName].First(x => x.FullPath == itemPath));
+							if (File.Exists(itemPath) && !Playlists[playlistName].Any(x => x.FullPath == itemPath) && Playlists[CurrentPlaylistName].Any(x => x.FullPath == itemPath)) {
+								var item = Playlists[CurrentPlaylistName].First(x => x.FullPath == itemPath);								
+								Playlists[playlistName].Add(new AudioFile {
+									Name = item.Name,
+									FullPath = item.FullPath,
+									FolderName = item.FolderName,
+									BitRate = item.BitRate,
+									ExtensionName = item.ExtensionName,
+									SampleRate = item.SampleRate,
+									Channels = item.Channels,
+									Duration = item.Duration,
+									Size = item.Size
+								});
+							}
 						} catch (Exception ex) { }
 					}
 				}
@@ -166,7 +178,7 @@ namespace xAudioPlayer.Repositories {
 		/// <param name="itemsPaths">Files paths</param>
 		public void RemoveFromPlayList(string playlistName, IEnumerable<string> itemsPaths) {
 			try {
-				OnCurrentPlaylistRefreshing?.Invoke();
+				OnPlaylistRefreshing?.Invoke();
 				if (Playlists.ContainsKey(playlistName)) {
 					foreach (var itemPath in itemsPaths) {
 						try {
@@ -175,8 +187,8 @@ namespace xAudioPlayer.Repositories {
 						} catch (Exception ex) { }
 					}
 				}
-				OnCurrentPlaylistRefreshed?.Invoke();
-			} catch (Exception ex) { OnCurrentPlaylistRefreshed?.Invoke(); }
+				OnPlaylistRefreshed?.Invoke();
+			} catch (Exception ex) { OnPlaylistRefreshed?.Invoke(); }
 		}
 		/// <summary>
 		/// Refresh current playlist
@@ -254,7 +266,7 @@ namespace xAudioPlayer.Repositories {
 		/// <param name="type">Name/duration</param>
 		/// <param name="desc">By descending</param>
 		public void SortPlayList(string type, bool desc) {
-			OnCurrentPlaylistRefreshing?.Invoke();
+			OnPlaylistRefreshing?.Invoke();
 			try {
 				switch (type) {
 					case "Name": {
@@ -271,7 +283,7 @@ namespace xAudioPlayer.Repositories {
 					}
 				}
 			} catch { }
-			OnCurrentPlaylistRefreshed?.Invoke();
+			OnPlaylistRefreshed?.Invoke();
 		}
 		/// <summary>
 		/// Change order of items

@@ -47,7 +47,7 @@ namespace xAudioPlayer.ViewModels {
 
 		public PlayerViewModel(INavigation nav) : base(nav) {
 			_plRepo.OnPlaylistsCollectionRefreshed += PlaylistsCollectionRefreshed;
-			_plRepo.OnCurrentPlaylistRefreshed += PlayListRefreshed;
+			_plRepo.OnPlaylistRefreshed += PlayListRefreshed;
 			_plRepo.OnPLayPauseAudioFile += PlayPauseAudioFile;
 
 			CrossMediaManager.Current.StateChanged += MediaStateChanged;

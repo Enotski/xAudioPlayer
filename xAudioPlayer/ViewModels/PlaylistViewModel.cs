@@ -72,8 +72,8 @@ namespace xAudioPlayer.ViewModels {
 			CurrentPlaylistName = _plRepo.CurrentPlaylistName;
 			_btnClickedTrigger = new ButtonClickedTriggerAction(SetAudioFileMenuLocation);
 
-			_plRepo.OnCurrentPlaylistRefreshing += CurrentPlaylistRefreshing;
-			_plRepo.OnCurrentPlaylistRefreshed += CurrentPlaylistRefreshed;
+			_plRepo.OnPlaylistRefreshing += CurrentPlaylistRefreshing;
+			_plRepo.OnPlaylistRefreshed += CurrentPlaylistRefreshed;
 			_plRepo.OnAudioFileChanged += AudioFileChanged;
 			_plRepo.OnMediaStateUpdated += MediaStateUpdated;
 			_plRepo.OnMediaProgressUpdated += MediaProgressChanged;
