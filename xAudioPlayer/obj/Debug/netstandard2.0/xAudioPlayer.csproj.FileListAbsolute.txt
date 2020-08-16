@@ -4,7 +4,6 @@ B:\WorkShop\xAudioPlayer\xAudioPlayer\bin\Debug\netstandard2.0\ref\xAudioPlayer.
 B:\WorkShop\xAudioPlayer\xAudioPlayer\bin\Debug\netstandard2.0\xAudioPlayer.pdb
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.csprojAssemblyReference.cache
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\App.xaml.g.cs
-B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\AudioFileInfoPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\FileBrowserPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\MainCarouselPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\QueuePage.xaml.g.cs
@@ -13,8 +12,13 @@ B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\RootPageMas
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Views\SettingsPage.xaml.g.cs
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.AssemblyInfoInputs.cache
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.AssemblyInfo.cs
-B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.csproj.CoreCompileInputs.cache
-B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\XamlC.stamp
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.dll
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\ref\xAudioPlayer.dll
 B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.pdb
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\xAudioPlayer.csproj.CoreCompileInputs.cache
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\XamlC.stamp
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Themes\DarkTheme.xaml.g.cs
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Themes\FeastTheme.xaml.g.cs
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Themes\LightTheme.xaml.g.cs
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Themes\NuanceTheme.xaml.g.cs
+B:\WorkShop\xAudioPlayer\xAudioPlayer\obj\Debug\netstandard2.0\Themes\AestheticTheme.xaml.g.cs

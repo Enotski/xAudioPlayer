@@ -2,14 +2,102 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+			 xmlns:models="clr-namespace:xAudioPlayer.Models"
+			 xmlns:views="clr-namespace:xAudioPlayer.Views"
+			 xmlns:services="clr-namespace:xAudioPlayer.Services"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="xAudioPlayer.Views.SettingsPage">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Settings"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+	<ContentPage.Content>
+		<RelativeLayout>
+			<!--Content-->
+			<StackLayout x:Name="SettingsContent" HorizontalOptions="FillAndExpand" Spacing="0" VerticalOptions="FillAndExpand"
+					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
+					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+				<StackLayout Style="{StaticResource Key=CustomBar}">
+					<Label Style="{StaticResource Key=NavBarLabel}" Text="Settings" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+					   FontSize="20" LineBreakMode="TailTruncation" Padding="0" MaxLines="1" 
+					   VerticalTextAlignment="Center" HorizontalTextAlignment="Center" HeightRequest="55"/>
+				</StackLayout>
+				<StackLayout Orientation="Vertical" Padding="10" HeightRequest="330" VerticalOptions="StartAndExpand">
+					<Label FontSize="18" Text="Themes" Padding="5,0,0,0"/>
+					<ListView x:Name="ThemesListView" VerticalOptions="FillAndExpand" SeparatorVisibility="None"
+							   SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}" BackgroundColor="Transparent"
+								HasUnevenRows="True" ItemsSource="{Binding ThemesList, Mode=TwoWay}">
+						<ListView.ItemTemplate>
+							<DataTemplate>
+								<ViewCell>
+									<ContentView>
+										<StackLayout x:Name="Item" Orientation="Horizontal" Margin="8" Spacing="0">
+											<Label Text="{Binding Name}" TextColor="DeepSkyBlue" FontSize="16" LineBreakMode="TailTruncation"
+											   MaxLines="1" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill"
+											   VerticalTextAlignment="Center" Padding="0,0,25,0" Margin="0,5,0,5" />
+											<Frame BorderColor="Black" Padding="1" VerticalOptions="CenterAndExpand" HorizontalOptions="EndAndExpand">
+												<StackLayout HeightRequest="40" Orientation="Horizontal" Spacing="0" VerticalOptions="CenterAndExpand" HorizontalOptions="EndAndExpand">
+													<BoxView BackgroundColor="{Binding FirstColor}" WidthRequest="24"/>
+													<BoxView BackgroundColor="{Binding SecondColor}" WidthRequest="24"/>
+													<BoxView BackgroundColor="{Binding ThirdColor}" WidthRequest="24"/>
+													<BoxView BackgroundColor="{Binding FourthColor}" WidthRequest="24"/>
+													<BoxView BackgroundColor="{Binding FifthColor}" WidthRequest="24"/>
+												</StackLayout>
+											</Frame>
+										</StackLayout>
+									</ContentView>
+								</ViewCell>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</StackLayout>
+				<StackLayout VerticalOptions="End" Spacing="10" HorizontalOptions="FillAndExpand" Orientation="Vertical" Padding="10" Style="{StaticResource Key=CustomBar}">
+					<StackLayout Orientation="Horizontal" VerticalOptions="Start">
+						<Label Style="{StaticResource Key=NavBarLabel}" FontSize="18" Text="Current theme:"/>
+						<Label Style="{StaticResource Key=NavBarLabel}" FontSize="18" Text="{Binding CurrentThemeName}"/>
+					</StackLayout>
+					<Frame BorderColor="Black" Padding="1">
+						<StackLayout Orientation="Horizontal" Spacing="0" VerticalOptions="StartAndExpand" HeightRequest="40">
+							<BoxView BackgroundColor="{Binding FirstCurrentThemeColor}" HorizontalOptions="FillAndExpand"/>
+							<BoxView BackgroundColor="{Binding SecondCurrentThemeColor}" HorizontalOptions="FillAndExpand"/>
+							<BoxView BackgroundColor="{Binding ThirdCurrentThemeColor}" HorizontalOptions="FillAndExpand"/>
+							<BoxView BackgroundColor="{Binding FourthCurrentThemeColor}" HorizontalOptions="FillAndExpand"/>
+							<BoxView BackgroundColor="{Binding FifthCurrentThemeColor}" HorizontalOptions="FillAndExpand"/>
+						</StackLayout>
+					</Frame>
+				</StackLayout>
+			</StackLayout>
+			<!--Content-->
+
+			<!--Modal background-->
+			<BoxView IsVisible="{Binding ModalBgVisible}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" BackgroundColor="SkyBlue" Opacity="0.2" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+				<BoxView.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
+				</BoxView.GestureRecognizers>
+			</BoxView>
+			<!--Modal background-->
+
+			<!--Accept modal-->
+			<services:CustomAbsoluteLayout IsVisible="True" IsEnabled="{Binding AcceptModalVisible}" BackgroundColor="Transparent"
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,ElementName=SettingsContent, Property=Width, Factor=0.87}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=SettingsContent, Property=Height, Factor=0.21}"  
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=SettingsContent, Property=Width, Factor=0.135 }">
+				<AbsoluteLayout.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
+				</AbsoluteLayout.GestureRecognizers>
+				<Frame BorderColor="{StaticResource PrimaryTextColor}" Padding="10" BackgroundColor="{StaticResource PageBackgroundColor}">
+					<StackLayout Orientation="Vertical" BackgroundColor="{StaticResource PageBackgroundColor}" HorizontalOptions="FillAndExpand" WidthRequest="270"
+							RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, ElementName=SettingsContent, Property=Width, Factor=0.8}"
+							RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=SettingsContent, Property=Height, Factor=0.21}"  
+							RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=SettingsContent, Property=Width, Factor=0.06 }">
+						<Label Text="Apply this theme?" HorizontalTextAlignment="Center" FontSize="14" Margin="0,0,0,0" TextColor="{StaticResource PrimaryTextColor}"/>
+						<StackLayout Orientation="Horizontal" Margin="0,5,0,0">
+							<Button HorizontalOptions="StartAndExpand" VerticalOptions="Center" Text="Close" Style="{StaticResource Key=PrimaryBtn}" BackgroundColor="Transparent"
+									FontSize="14" Command="{Binding CloseModalCommand}" CommandParameter="close"/>
+							<Button HorizontalOptions="EndAndExpand" VerticalOptions="Center" Text="Ok" Style="{StaticResource Key=PrimaryBtn}" BackgroundColor="Transparent" FontSize="14"
+									Command="{Binding CloseModalCommand}" CommandParameter="set_theme"/>
+						</StackLayout>
+					</StackLayout>
+				</Frame>
+			</services:CustomAbsoluteLayout>
+			<!--Accept modal-->
+		</RelativeLayout>
+	</ContentPage.Content>
 </ContentPage>

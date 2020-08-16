@@ -9,17 +9,6 @@
              mc:Ignorable="d"
              x:Class="xAudioPlayer.Views.RootPageMaster"
              Title="Master">
-	<ContentPage.Resources>
-		<ResourceDictionary>
-			<Style TargetType="Button">
-				<Style.Triggers>
-					<EventTrigger Event="Clicked">
-						<services:ButtonClickedTriggerAction />
-					</EventTrigger>
-				</Style.Triggers>
-			</Style>
-		</ResourceDictionary>
-	</ContentPage.Resources>
 	<ContentPage.Content>
 		<RelativeLayout>
 			<StackLayout x:Name="RootPageMainContent" Orientation="Vertical" Margin="0,0,0,5"

@@ -8,6 +8,7 @@ ExoPlayer.UI
 FormsViewGroup
 MediaManager
 MediaManager.Forms
+SQLitePCLRaw.lib.e_sqlite3.android
 Xamarin.Android.Arch.Core.Common
 Xamarin.Android.Arch.Core.Runtime
 Xamarin.Android.Arch.Lifecycle.Common

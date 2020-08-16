@@ -1,6 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 using xAudioPlayer.Interfaces;
+using xAudioPlayer.Repositories;
 
 namespace xAudioPlayer.Services {
 	/// <summary>
@@ -33,7 +34,7 @@ namespace xAudioPlayer.Services {
 				}
 
 				var actualColor = sender.TextColor;
-				var randomColor = Color.OrangeRed;
+				var randomColor = SettingsRepository.CurrentTheme.SecondColor;
 
 				await sender.ChangeTextColorTo(randomColor, 150, Easing.CubicOut);
 				await sender.ChangeTextColorTo(actualColor, 100, Easing.SinOut);

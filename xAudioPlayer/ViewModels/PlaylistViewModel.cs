@@ -61,13 +61,6 @@ namespace xAudioPlayer.ViewModels {
 		public string CheckMultipleIcon { get; } = Constants.Icons["mdi-checkbox-multiple-marked-outline"];
 		public string CheckIcon { get; } = Constants.Icons["mdi-check-outline"];
 
-		public ObservableListCollection<AudioFile> CurrentPLaylist {
-			get => _currentPLaylist;
-			set {
-				SetProperty(ref _currentPLaylist, value);
-			}
-		}
-
 		public PlaylistViewModel(INavigation nav) : base(nav) {
 			CurrentPlaylistName = _plRepo.CurrentPlaylistName;
 			_btnClickedTrigger = new ButtonClickedTriggerAction(SetAudioFileMenuLocation);
@@ -315,6 +308,12 @@ namespace xAudioPlayer.ViewModels {
 		/// </summary>
 		public ICommand ClearCommand { private set; get; }
 
+		public ObservableListCollection<AudioFile> CurrentPLaylist {
+			get => _currentPLaylist;
+			set {
+				SetProperty(ref _currentPLaylist, value);
+			}
+		}
 		public double AudioFileProgressValue {
 			set { SetProperty(ref _audioFileProgressValue, value); }
 			get { return _audioFileProgressValue; }
@@ -517,15 +516,16 @@ namespace xAudioPlayer.ViewModels {
 			} catch { }
 		}
 		private void MediaProgressChanged(TimeSpan progress) {
-			AudioFileProgressValue = progress.TotalMinutes / SelectedItem.Duration.TotalMinutes;
+			if (SelectedItem != null)
+				AudioFileProgressValue = progress.TotalMinutes / SelectedItem.Duration.TotalMinutes;
 		}
 		void AudioFileChanged(AudioFile audioFile) {
 			SelectedItem = audioFile;
 		}
 		void UpdateCurentAudioFileInfo() {
-			foreach (var item in CurrentPLaylist)
-				item.BgColor = Color.Transparent;
-			SelectedItem.BgColor = Color.LightGray;
+			//foreach (var item in CurrentPLaylist)
+			//	item.BgColor = Color.Transparent;
+			//SelectedItem.BgColor = Color.LightGray;
 			NameOfCurrentAudioFile = SelectedItem.Name;
 		}
 		async void AddAudioFile(string args) {

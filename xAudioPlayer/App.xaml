@@ -3,18 +3,44 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:services="clr-namespace:xAudioPlayer.Services"
              mc:Ignorable="d"
              x:Class="xAudioPlayer.App">
-
-    <Application.Resources>
-        <ResourceDictionary>
-            <!--Global Styles-->
-            <Color x:Key="NavigationPrimary">#2196F3</Color>
-            <Style TargetType="NavigationPage">
-                <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
-                <Setter Property="BarTextColor" Value="White" />
-            </Style>
-        </ResourceDictionary>
-    </Application.Resources>
-    
+	<Application.Resources>
+		<ResourceDictionary Source="Themes/LightTheme.xaml"/>
+		<Style TargetType="Label">
+			<Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}" />
+			<Setter Property="BackgroundColor" Value="{DynamicResource TransparentColor}" />
+		</Style>
+		<Style x:Key="SecondaryLabel" TargetType="Label">
+			<Setter Property="TextColor" Value="{DynamicResource TertiaryTextColor}" />
+			<Setter Property="BackgroundColor" Value="{DynamicResource TransparentColor}" />
+		</Style>
+		<Style x:Key="NavBarLabel" TargetType="Label">
+			<Setter Property="TextColor" Value="{DynamicResource  PrimaryColor}" />
+		</Style>
+		<Style x:Key="BaseBtnStyle" TargetType="Button">
+			<Style.Triggers>
+				<EventTrigger Event="Clicked">
+					<services:ButtonClickedTriggerAction />
+				</EventTrigger>
+			</Style.Triggers>
+			<Setter Property="BackgroundColor" Value="{DynamicResource TransparentColor}"/>
+		</Style>
+		<Style x:Key="NavBarBtn" TargetType="Button" BasedOn="{StaticResource Key=BaseBtnStyle}">
+			<Setter Property="TextColor" Value="{DynamicResource PrimaryColor}"/>
+		</Style>
+		<Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource Key=BaseBtnStyle}">
+			<Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}"/>
+		</Style>
+		<Style x:Key="CustomBar" TargetType="StackLayout">
+			<Setter Property="BackgroundColor" Value="{DynamicResource NavigationBarColor}"/>
+		</Style>
+		<Style TargetType="ContentPage">
+			<Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
+		</Style>
+		<Style TargetType="ListView">
+			<Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
+		</Style>
+	</Application.Resources>
 </Application>

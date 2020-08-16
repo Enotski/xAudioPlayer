@@ -9,32 +9,20 @@
              mc:Ignorable="d"
            x:Class="xAudioPlayer.Views.MainCarouselPage">
 	<ContentPage x:Name="PlayerContent">
-		<ContentPage.Resources>
-			<ResourceDictionary>
-				<Style x:Key="ButtonClickStyle" TargetType="Button">
-					<Style.Triggers>
-						<EventTrigger Event="Clicked">
-							<services:ButtonClickedTriggerAction />
-						</EventTrigger>
-					</Style.Triggers>
-				</Style>
-			</ResourceDictionary>
-		</ContentPage.Resources>
 		<RelativeLayout>
 			<!--Content-->
 			<StackLayout x:Name="PlayerContentStackLayout" HorizontalOptions="FillAndExpand"
 					RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}"
 					RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-				<StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal" Spacing="0" Padding="0,0,0,5"  VerticalOptions="Start">
-					<Button Text="{Binding MenuIcon}" Command="{Binding MenuCommand}" TextColor="DeepSkyBlue" HorizontalOptions="Start" BackgroundColor="Transparent"
-						Style="{StaticResource ButtonClickStyle}"
+				<StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal" Spacing="0" Padding="0,0,0,5"  VerticalOptions="Start" Style="{StaticResource Key=CustomBar}">
+					<Button Text="{Binding MenuIcon}" Command="{Binding MenuCommand}" HorizontalOptions="Start"	Style="{StaticResource NavBarBtn}"
 						BorderWidth="0" FontSize="30" WidthRequest="50"	FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 					<StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-						<Label Text="{Binding PlaylistInfo}" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+						<Label Style="{StaticResource NavBarLabel}" Text="{Binding PlaylistInfo}" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
 					   FontSize="18" LineBreakMode="TailTruncation" Padding="10,0,5,0" MaxLines="1" HeightRequest="25"
 					   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
 					</StackLayout>
-					<Button TextColor="DeepSkyBlue" HorizontalOptions="End" BackgroundColor="Transparent" Style="{StaticResource ButtonClickStyle}"
+					<Button HorizontalOptions="End" Style="{StaticResource NavBarBtn}"
 						BorderWidth="0" WidthRequest="50" Text="{Binding DotsIcon}" Command="{Binding AudioFileMenuCommand}"
 						FontSize="30" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 				</StackLayout>
@@ -47,20 +35,20 @@
 						<Label Text="{Binding AudioFileProgressTime, StringFormat='{0:mm\\:ss}'}" HorizontalTextAlignment="Start" MaxLines="1" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
 						<Label Text="{Binding AudioFileDurationTime, StringFormat='{0:mm\\:ss}'}" HorizontalTextAlignment="End" MaxLines="1" VerticalOptions="Center" HorizontalOptions="EndAndExpand"/>
 					</StackLayout>
-					<Slider HeightRequest="50" FlowDirection="LeftToRight" Maximum="{Binding AudioFileDurationValue}" Value="{Binding AudioFileProgressValue}" DragCompletedCommand="{Binding AudioFileProgressChangedCommand}"/>
+					<Slider HeightRequest="50" FlowDirection="LeftToRight" Maximum="{Binding AudioFileDurationValue}" Value="{Binding AudioFileProgressValue}" DragCompletedCommand="{Binding AudioFileProgressChangedCommand}" ThumbColor="{DynamicResource TertiaryTextColor}"/>
 				</StackLayout>
-				<StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" Padding="5,5,5,10" HeightRequest="50">
-					<Button TextColor="{Binding ShuffleBtnColor}" Command="{Binding ShuffleCommand}" Text="{Binding ShuffleIcon}" BackgroundColor="Transparent" HorizontalOptions="StartAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
-					<Button TextColor="DeepSkyBlue" Command="{Binding ChangeAudioFileCommand}" Text="{Binding PrevIcon}" CommandParameter="prev" BackgroundColor="Transparent" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
-					<Button TextColor="DeepSkyBlue" Command="{Binding PlayPauseCommand}" Text="{Binding PlayPauseIcon}"  BackgroundColor="Transparent" HorizontalOptions="CenterAndExpand"	FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
-					<Button TextColor="DeepSkyBlue" Command="{Binding ChangeAudioFileCommand}" Text="{Binding NextIcon}" CommandParameter="next" BackgroundColor="Transparent" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource ButtonClickStyle}"/>
-					<Button TextColor="{Binding RepeatBtnColor}" Command="{Binding RepeatCommand}" Text="{Binding RepeatIcon}"  BackgroundColor="Transparent" HorizontalOptions="EndAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
+				<StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" Padding="5,5,5,10" HeightRequest="50" Style="{StaticResource Key=CustomBar}">
+					<Button TextColor="{Binding ShuffleBtnColor}" Command="{Binding ShuffleCommand}" Text="{Binding ShuffleIcon}" HorizontalOptions="StartAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
+					<Button Command="{Binding ChangeAudioFileCommand}" Text="{Binding PrevIcon}" CommandParameter="prev" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource Key=NavBarBtn}"/>
+					<Button Command="{Binding PlayPauseCommand}" Text="{Binding PlayPauseIcon}" HorizontalOptions="CenterAndExpand"	FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource NavBarBtn}"/>
+					<Button Command="{Binding ChangeAudioFileCommand}" Text="{Binding NextIcon}" CommandParameter="next" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource NavBarBtn}"/>
+					<Button TextColor="{Binding RepeatBtnColor}" Command="{Binding RepeatCommand}" Text="{Binding RepeatIcon}" HorizontalOptions="EndAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 				</StackLayout>
 			</StackLayout>
 			<!--Content-->
 
 			<!--Modal background-->
-			<BoxView IsVisible="{Binding ModalBackgroundVisible}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" BackgroundColor="SkyBlue" Opacity="0.2" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+			<BoxView IsVisible="{Binding ModalBackgroundVisible}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" BackgroundColor="{StaticResource PrimaryTextColor }" Opacity="0.2" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
 				<BoxView.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
 				</BoxView.GestureRecognizers>
@@ -68,39 +56,28 @@
 			<!--Modal background-->
 
 			<!--AudioFile menu panel-->
-			<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding AudioFileMenuVisible}"
+			<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding AudioFileMenuVisible}" BackgroundColor="Transparent"
 								RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=0.5, Constant=0}"
 								RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlayerContentStackLayout, Property=Height, Factor=0.08}"  
 								RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlayerContentStackLayout, Property=Width, Factor=0.55 }">
 				<AbsoluteLayout.GestureRecognizers>
 					<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
 				</AbsoluteLayout.GestureRecognizers>
-				<StackLayout BackgroundColor="White" Spacing="0" Orientation="Vertical"
+				<StackLayout BackgroundColor="{StaticResource PageBackgroundColor}" Spacing="0" Orientation="Vertical"
 						 RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=0.5, Constant=0}"
 						 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlayerContentStackLayout, Property=Height, Factor=0.08}"  
 						 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlayerContentStackLayout, Property=Width, Factor=0.55 }">
-					<Button FontSize="12" Text="{Binding QueueAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Queue" Style="{StaticResource ButtonClickStyle}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-					<Button FontSize="12" Text="{Binding FavoriteAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Favorite" Style="{StaticResource ButtonClickStyle}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-					<Button FontSize="12" Text="Add to playlist..." Command="{Binding AddCommand}" CommandParameter="Playlist" Style="{StaticResource ButtonClickStyle}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-					<Button FontSize="12" Text="Remove from playlist..." Command="{Binding RemoveCommand}" CommandParameter="Playlist" Style="{StaticResource ButtonClickStyle}"  TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-					<Button FontSize="12" Text="Remove from directory" Command="{Binding RemoveCommand}" CommandParameter="Directory" Style="{StaticResource ButtonClickStyle}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
+					<Button FontSize="12" Text="{Binding QueueAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Queue" Style="{StaticResource Key=PrimaryBtn}"/>
+					<Button FontSize="12" Text="{Binding FavoriteAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Favorite" Style="{StaticResource Key=PrimaryBtn}"/>
+					<Button FontSize="12" Text="Add to playlist..." Command="{Binding AddCommand}" CommandParameter="Playlist" Style="{StaticResource Key=PrimaryBtn}"/>
+					<Button FontSize="12" Text="Remove from playlist..." Command="{Binding RemoveCommand}" CommandParameter="Playlist" Style="{StaticResource Key=PrimaryBtn}"/>
+					<Button FontSize="12" Text="Remove from directory" Command="{Binding RemoveCommand}" CommandParameter="Directory" Style="{StaticResource Key=PrimaryBtn}"/>
 				</StackLayout>
 			</services:CustomAbsoluteLayout>
 			<!--AudioFile menu panel-->
 		</RelativeLayout>
 	</ContentPage>
 	<ContentPage x:Name="PlaylistContent">
-		<ContentPage.Resources>
-			<ResourceDictionary>
-				<Style TargetType="Button">
-					<Style.Triggers>
-						<EventTrigger Event="Clicked">
-							<services:ButtonClickedTriggerAction />
-						</EventTrigger>
-					</Style.Triggers>
-				</Style>
-			</ResourceDictionary>
-		</ContentPage.Resources>
 		<ContentPage.Content>
 			<RelativeLayout>
 				<!--Content-->
@@ -119,14 +96,14 @@
 							<ColumnDefinition Width="Auto"/>
 						</Grid.ColumnDefinitions>
 					</Grid>
-					<StackLayout  Grid.Row="0" HorizontalOptions="FillAndExpand" Orientation="Horizontal" Spacing="0" Padding="5,0,5,5"  VerticalOptions="Start">
-						<Button Text="{Binding MenuIcon}" TextColor="DeepSkyBlue" HorizontalOptions="Start" BackgroundColor="Transparent" Command="{Binding MenuCommand}"
+					<StackLayout  Grid.Row="0" HorizontalOptions="FillAndExpand" Orientation="Horizontal" Spacing="0" Padding="5,0,5,5"  VerticalOptions="Start" Style="{StaticResource Key=CustomBar}">
+						<Button Text="{Binding MenuIcon}" HorizontalOptions="Start" Style="{StaticResource NavBarBtn}" Command="{Binding MenuCommand}"
 						BorderWidth="0" FontSize="30" WidthRequest="50"	FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
 						<StackLayout IsVisible="{Binding HeaderInfoVisible}" Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-							<Label Text="{Binding CurrentPlaylistName}" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
+							<Label Style="{StaticResource NavBarLabel}" Text="{Binding CurrentPlaylistName}" HorizontalOptions="FillAndExpand" VerticalOptions="Start"
 					   FontSize="18" LineBreakMode="TailTruncation" Padding="10,0,0,0" MaxLines="1" HeightRequest="25"
 					   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-							<Label Text="{Binding PlaylistInfo}" HorizontalOptions="FillAndExpand" VerticalOptions="End"
+							<Label Style="{StaticResource NavBarLabel}" Text="{Binding PlaylistInfo}" HorizontalOptions="FillAndExpand" VerticalOptions="End"
 					   FontSize="10" LineBreakMode="TailTruncation" Padding="10,0,0,0" MaxLines="1" HeightRequest="25"
 					   VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
 						</StackLayout>
@@ -144,15 +121,15 @@
 										<StackLayout x:Name="Item" Orientation="Horizontal" Margin="5,5,5,5" Spacing="0" BackgroundColor="{Binding BgColor}">
 											<CheckBox IsVisible="{Binding Source={RelativeSource AncestorType={x:Type vms:PlaylistViewModel}}, Path=ItemCheckBoxVisible}" IsChecked="{Binding ItemChecked, Mode=TwoWay}" HorizontalOptions="Start" VerticalOptions="Fill"/>
 											<StackLayout Orientation="Vertical" Spacing="0" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Padding="10,0,0,0">
-												<Label Text="{Binding FullNameFormatted}" TextColor="DeepSkyBlue" FontSize="13" LineBreakMode="TailTruncation"
-											   MaxLines="1" BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill"
+												<Label Text="{Binding FullNameFormatted}" FontSize="13" LineBreakMode="TailTruncation"
+											   MaxLines="1" VerticalOptions="Fill" HorizontalOptions="Fill"
 											   VerticalTextAlignment="Center" Padding="0,0,25,0" Margin="0,5,0,5" />
-												<Label Text="{Binding AudioFilePropertiesFormatted}" TextColor="BlueViolet" FontSize="11" MaxLines="1"
-											BackgroundColor="Transparent" VerticalOptions="Fill" HorizontalOptions="Fill"
+												<Label Text="{Binding AudioFilePropertiesFormatted}" Style="{StaticResource Key=SecondaryLabel}" FontSize="11" MaxLines="1"
+											VerticalOptions="Fill" HorizontalOptions="Fill"
 											VerticalTextAlignment="Start" Margin="0,0,0,5"/>
 											</StackLayout>
-											<Label Text="{Binding Duration, StringFormat='{0:mm\\:ss}'}" MinimumWidthRequest="50" Padding="0,7,0,0" TextColor="DeepSkyBlue" FontSize="12" MaxLines="1" BackgroundColor="Transparent" HorizontalTextAlignment="End" VerticalTextAlignment="Start" />
-											<Button TextColor="DeepSkyBlue" HorizontalOptions="End" BackgroundColor="Transparent" Padding="0,0,0,0" Margin="0,0,0,0"
+											<Label Text="{Binding Duration, StringFormat='{0:mm\\:ss}'}" MinimumWidthRequest="50" Padding="0,7,0,0" FontSize="12" MaxLines="1"  HorizontalTextAlignment="End" VerticalTextAlignment="Start" />
+											<Button HorizontalOptions="End" Style="{StaticResource PrimaryBtn}" Padding="0,0,0,0" Margin="0,0,0,0"
 											BorderWidth="0" WidthRequest="45" Text="{Binding DotsIcon}"
 											BindingContext="{Binding Source={x:Reference PagePlaylist}, Path=BindingContext}"
 											Command="{Binding AudioFileMenuCommand}"
@@ -168,7 +145,7 @@
 						</ListView.ItemTemplate>
 					</ListView>
 
-					<StackLayout Grid.Row="2" Grid.Column="0" VerticalOptions="EndAndExpand" Spacing="0" HorizontalOptions="FillAndExpand" Orientation="Vertical"  Padding="0,0,0,10" HeightRequest="130">
+					<StackLayout Grid.Row="2" Grid.Column="0" VerticalOptions="EndAndExpand" Spacing="0" HorizontalOptions="FillAndExpand" Orientation="Vertical"  Padding="0,0,0,10" HeightRequest="130" Style="{StaticResource Key=CustomBar}">
 						<Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" RowSpacing="0">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="10"/>
@@ -179,30 +156,30 @@
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 							<ProgressBar Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0" Progress="{Binding AudioFileProgressValue}"/>
-							<Label Padding="5,0,0,0" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="{Binding NameOfCurrentAudioFile}" LineBreakMode="TailTruncation"/>
+							<Label Style="{StaticResource NavBarLabel}" Padding="5,0,0,0" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="{Binding NameOfCurrentAudioFile}" LineBreakMode="TailTruncation"/>
 							<StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Padding="0,0,5,0">
-								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" HeightRequest="40" Text="{Binding PrevIcon}" HorizontalOptions="Center" VerticalOptions="Fill"
+								<Button Style="{StaticResource NavBarBtn}" HeightRequest="40" Text="{Binding PrevIcon}" HorizontalOptions="Center" VerticalOptions="Fill"
 							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PrevNextCommand}" CommandParameter="prev"/>
-								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding PlayPauseIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
+								<Button Style="{StaticResource NavBarBtn}" Text="{Binding PlayPauseIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
 							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PlayPauseCommand}"/>
-								<Button TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding NextIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
+								<Button Style="{StaticResource NavBarBtn}" Text="{Binding NextIcon}" HeightRequest="40" HorizontalOptions="CenterAndExpand" VerticalOptions="Fill"
 							FontSize="20" WidthRequest="40" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Command="{Binding PrevNextCommand}" CommandParameter="next"/>
 							</StackLayout>
 						</Grid>
-						<StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Horizontal" HeightRequest="50" Padding="5,0,5,0">
-							<Button TextColor="DeepSkyBlue" IsVisible="{Binding ItemCheckBoxVisible}"  BackgroundColor="Transparent" Text="{Binding CheckMultipleIcon}" HorizontalOptions="Start" Command="{Binding CheckAllCommand}" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button IsVisible="{Binding StandartMenuButtonsVisible}" TextColor="DeepSkyBlue"  BackgroundColor="Transparent" Text="{Binding PlusIcon}" Command="{Binding AddCommand}" HorizontalOptions="Start" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button TextColor="DeepSkyBlue" IsVisible="{Binding RemoveMenuButtonVisible}" BackgroundColor="Transparent" Text="{Binding MinusIcon}" Command="{Binding RemoveCommand}" CommandParameter="Global" HorizontalOptions="Start"
+						<StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand" Orientation="Horizontal" HeightRequest="50" Padding="5,0,5,0" Style="{StaticResource Key=CustomBar}">
+							<Button Style="{StaticResource NavBarBtn}" IsVisible="{Binding ItemCheckBoxVisible}" Text="{Binding CheckMultipleIcon}" HorizontalOptions="Start" Command="{Binding CheckAllCommand}" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							<Button IsVisible="{Binding StandartMenuButtonsVisible}" Style="{StaticResource NavBarBtn}" Text="{Binding PlusIcon}" Command="{Binding AddCommand}" HorizontalOptions="Start" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							<Button IsVisible="{Binding RemoveMenuButtonVisible}" Style="{StaticResource NavBarBtn}" Text="{Binding MinusIcon}" Command="{Binding RemoveCommand}" CommandParameter="Global" HorizontalOptions="Start"
 							FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button IsVisible="{Binding ContextSortingEnabled}" TextColor="DeepSkyBlue"  BackgroundColor="Transparent" Text="{Binding SortAscDescIcon}" Command="{Binding SortCommand}" HorizontalOptions="Start" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button TextColor="DeepSkyBlue" IsVisible="{Binding DragMenuButtonVisible}" BackgroundColor="Transparent" Text="{Binding FormatIcon}" Command="{Binding ContextCommand}" HorizontalOptions="Start"
+							<Button IsVisible="{Binding ContextSortingEnabled}" Style="{StaticResource NavBarBtn}" Text="{Binding SortAscDescIcon}" Command="{Binding SortCommand}" HorizontalOptions="Start" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							<Button IsVisible="{Binding DragMenuButtonVisible}" Style="{StaticResource NavBarBtn}" Text="{Binding FormatIcon}" Command="{Binding ContextCommand}" HorizontalOptions="Start"
 							FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button TextColor="DeepSkyBlue" IsVisible="{Binding ContextSortingEnabled}" BackgroundColor="Transparent" Text="{Binding SortIcon}" Command="{Binding SortByCommand}" CommandParameter="ContextMenu" HorizontalOptions="Start" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button TextColor="DeepSkyBlue" IsVisible="{Binding SearchMenuButtonVisible}" BackgroundColor="Transparent" Text="{Binding SearchIcon}" Command="{Binding SearchCommand}" HorizontalOptions="EndAndExpand"
+							<Button IsVisible="{Binding ContextSortingEnabled}" Style="{StaticResource NavBarBtn}" Text="{Binding SortIcon}" Command="{Binding SortByCommand}" CommandParameter="ContextMenu" HorizontalOptions="Start" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
+							<Button IsVisible="{Binding SearchMenuButtonVisible}" Style="{StaticResource NavBarBtn}" Text="{Binding SearchIcon}" Command="{Binding SearchCommand}" HorizontalOptions="EndAndExpand"
 							FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button IsVisible="{Binding ItemCheckBoxVisible}" TextColor="DeepSkyBlue" BackgroundColor="Transparent" Text="{Binding CheckIcon}" HorizontalOptions="EndAndExpand" Command="{Binding AcceptRemoveCommand}"
+							<Button IsVisible="{Binding ItemCheckBoxVisible}" Style="{StaticResource NavBarBtn}" Text="{Binding CheckIcon}" HorizontalOptions="EndAndExpand" Command="{Binding AcceptRemoveCommand}"
 							FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
-							<Button TextColor="DeepSkyBlue" IsVisible="{Binding StandartMenuButtonsVisible}" BackgroundColor="Transparent" Text="{Binding DotsIcon}" HorizontalOptions="End" Command="{Binding PlaylistMenuCommand}"
+							<Button IsVisible="{Binding StandartMenuButtonsVisible}" Style="{StaticResource NavBarBtn}" Text="{Binding DotsIcon}" HorizontalOptions="End" Command="{Binding PlaylistMenuCommand}"
 							FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons"/>
 						</StackLayout>
 					</StackLayout>
@@ -210,7 +187,7 @@
 				<!--Content-->
 
 				<!--Modal background-->
-				<BoxView IsVisible="{Binding ModalBackgroundVisible}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" BackgroundColor="SkyBlue" Opacity="0.2" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
+				<BoxView IsVisible="{Binding ModalBackgroundVisible}" RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width,Factor=1,Constant=0}" BackgroundColor="{StaticResource PrimaryTextColor }" Opacity="0.2" RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
 					<BoxView.GestureRecognizers>
 						<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
 					</BoxView.GestureRecognizers>
@@ -218,43 +195,43 @@
 				<!--Modal background-->
 
 				<!--AudioFile menu panel-->
-				<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding AudioFileMenuVisible}">
+				<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding AudioFileMenuVisible}" BackgroundColor="Transparent">
 					<AbsoluteLayout.GestureRecognizers>
 						<TapGestureRecognizer Command="{Binding ModalBackGroundTappedCommand}"/>
 					</AbsoluteLayout.GestureRecognizers>
-					<StackLayout BackgroundColor="White" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutBounds="{Binding AudioFileMenuLocation}" >
-						<Button FontSize="12" Text="{Binding QueueAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Queue" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="{Binding FavoriteAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Favorite" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="Add to playlist..." Command="{Binding AddCommand}" CommandParameter="Playlist" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="Remove from playlist..." Command="{Binding RemoveCommand}" CommandParameter="Playlist"  TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="Remove from directory" Command="{Binding RemoveCommand}" CommandParameter="Directory" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
+					<StackLayout BackgroundColor="{StaticResource PageBackgroundColor}" Spacing="0" Orientation="Vertical" AbsoluteLayout.LayoutBounds="{Binding AudioFileMenuLocation}" >
+						<Button FontSize="12" Text="{Binding QueueAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Queue" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="{Binding FavoriteAddBtnText}" Command="{Binding AddCommand}" CommandParameter="Favorite" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="Add to playlist..." Command="{Binding AddCommand}" CommandParameter="Playlist" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="Remove from playlist..." Command="{Binding RemoveCommand}" CommandParameter="Playlist" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="Remove from directory" Command="{Binding RemoveCommand}" CommandParameter="Directory" Style="{StaticResource Key=PrimaryBtn}"/>
 					</StackLayout>
 				</services:CustomAbsoluteLayout>
 				<!--AudioFile menu panel-->
 
 				<!--Bottom settings buttons panel-->
-				<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding PlaylistMenuVisible}" 
+				<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding PlaylistMenuVisible}" BackgroundColor="Transparent"
 						 RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=0.5, Constant=0}"
 						 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Height, Factor=0.634}"  
 						 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Width, Factor=0.67 }">
-					<StackLayout BackgroundColor="White" Spacing="0" Orientation="Vertical"
+					<StackLayout BackgroundColor="{StaticResource PageBackgroundColor}" Spacing="0" Orientation="Vertical"
 						 RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=0.5}"
 						 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Height, Factor=0.634}"  
 						 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Width, Factor=0.67 }">
-						<Button FontSize="12" Text="Sort by..." Command="{Binding SortByCommand}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="Group by..." Command="{Binding GroupByCommand}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="Refresh playlist" Command="{Binding RefreshCommand}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-						<Button FontSize="12" Text="Clear playlist" Command="{Binding ClearCommand}" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
+						<Button FontSize="12" Text="Sort by..." Command="{Binding SortByCommand}" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="Group by..." Command="{Binding GroupByCommand}" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="Refresh playlist" Command="{Binding RefreshCommand}" Style="{StaticResource Key=PrimaryBtn}"/>
+						<Button FontSize="12" Text="Clear playlist" Command="{Binding ClearCommand}" Style="{StaticResource Key=PrimaryBtn}"/>
 					</StackLayout>
 				</services:CustomAbsoluteLayout>
 				<!--Bottom settings buttons panel-->
 
 				<!--Sort options panel-->
-				<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding SortByPanelVisible}"
+				<services:CustomAbsoluteLayout IsVisible="False" IsEnabled="{Binding SortByPanelVisible}" BackgroundColor="Transparent"
 						RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=0.46}"
 						 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Height, Factor=0.3}"  
 						 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Width, Factor=0.3 }">
-					<Grid BackgroundColor="White" 
+					<Grid BackgroundColor="{StaticResource PageBackgroundColor}"
 					   RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent,Property=Width, Factor=0.7}"
 						 RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Height, Factor=0.3}"  
 						 RelativeLayout.XConstraint="{ConstraintExpression Type=RelativeToView, ElementName=PlaylistContentGrid, Property=Width, Factor=0.3 }">
@@ -267,7 +244,7 @@
 							<RowDefinition Height="50"/>
 						</Grid.RowDefinitions>
 						<Label Grid.Row="0" FontSize="20" Text="Sort by..." Margin="5,5,5,10"/>
-						<BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="LightGray"/>
+						<BoxView Grid.Row="1" HeightRequest="1" BackgroundColor="{DynamicResource SecondaryColor}"/>
 						<StackLayout Grid.Row="2" Orientation="Vertical" Margin="5,5,5,10">
 							<RadioButton IsChecked="True"  Text="Name" GroupName="SortType" Command="{Binding SortTypeChangedCommand}" CommandParameter="Name"/>
 							<RadioButton  Text="Duration" GroupName="SortType" Command="{Binding SortTypeChangedCommand}" CommandParameter="Duration"/>
@@ -278,10 +255,10 @@
 								<Switch HorizontalOptions="EndAndExpand" IsToggled="{Binding SortReverseToggled}"/>
 							</StackLayout>
 						</StackLayout>
-						<BoxView Grid.Row="4" HeightRequest="1" BackgroundColor="LightGray"/>
+						<BoxView Grid.Row="4" HeightRequest="1" BackgroundColor="{DynamicResource SecondaryColor}"/>
 						<StackLayout Grid.Row="5" Orientation="Horizontal">
-							<Button FontSize="12" Text="Back" Command="{Binding SortTypeBtnPressedCommand}" CommandParameter="Back" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
-							<Button FontSize="12" Text="Ok" Command="{Binding SortTypeBtnPressedCommand}" CommandParameter="Ok" TextColor="DeepSkyBlue" BackgroundColor="Transparent"/>
+							<Button FontSize="12" Text="Back" Command="{Binding SortTypeBtnPressedCommand}" CommandParameter="Back" Style="{StaticResource Key=PrimaryBtn}"/>
+							<Button FontSize="12" Text="Ok" Command="{Binding SortTypeBtnPressedCommand}" CommandParameter="Ok" Style="{StaticResource Key=PrimaryBtn}"/>
 						</StackLayout>
 					</Grid>
 				</services:CustomAbsoluteLayout>

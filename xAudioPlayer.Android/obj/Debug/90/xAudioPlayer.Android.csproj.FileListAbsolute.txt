@@ -561,3 +561,11 @@ B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\stamp\_ConvertResourc
 B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\stamp\_GenerateJavaStubs.stamp
 B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\stamp\_GeneratePackageManagerJava.stamp
 B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\stamp\_ResolveLibraryProjectImports.stamp
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\SQLite-net.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\SQLitePCLRaw.batteries_v2.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\SQLitePCLRaw.core.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\SQLitePCLRaw.lib.e_sqlite3.android.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\SQLitePCLRaw.provider.e_sqlite3.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\System.Buffers.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\System.Memory.dll
+B:\WorkShop\xAudioPlayer\xAudioPlayer.Android\obj\Debug\90\android\assets\System.Runtime.CompilerServices.Unsafe.dll

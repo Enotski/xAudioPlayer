@@ -1,5 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
+using xAudioPlayer.Repositories;
 using xAudioPlayer.Views;
 
 namespace xAudioPlayer {
@@ -12,6 +13,7 @@ namespace xAudioPlayer {
 				"RadioButton_Experimental",
 				"IndicatorView_Experimental",
 			});
+			var settings = SettingsRepository.GetInstance();
 			var rootPage = new RootPage();
 			MainPage = rootPage;
 			MessagingCenter.Subscribe<EventArgs>(this, "OpenMenu", args =>
