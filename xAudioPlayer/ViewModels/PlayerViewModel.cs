@@ -31,8 +31,7 @@ namespace xAudioPlayer.ViewModels {
 		bool _modalBackgroundVisible;
 		bool _audioFileMenuVisible;
 		RepeatTypeEnum _repeatType = RepeatTypeEnum.None;
-		Color _shuffleBtnColor = Color.CadetBlue;
-		Color _repeatBtnColor = Color.CadetBlue;
+		Color _shuffleBtnColor = SettingsRepository.CurrentTheme.FourthColor;
 		AudioFile _currentAudioFile;
 
 		public static PlaylistRepository _plRepo = PlaylistRepository.GetInstance();
@@ -61,13 +60,12 @@ namespace xAudioPlayer.ViewModels {
 			ShuffleCommand = new Command(
 				execute: () => {
 					_isShuffled = !_isShuffled;
-					ShuffleBtnColor = _isShuffled ? Color.DeepSkyBlue : Color.CadetBlue;
+					ShuffleBtnColor = _isShuffled ? SettingsRepository.CurrentTheme.FirstColor : SettingsRepository.CurrentTheme.FourthColor;
 					_plRepo.SetShuffle(_isShuffled);
 				});
 			RepeatCommand = new Command(
 				execute: () => {
 					_repeatType = _repeatType == RepeatTypeEnum.All ? RepeatTypeEnum.None : ++_repeatType;
-					RepeatBtnColor = _repeatType == RepeatTypeEnum.None ? Color.CadetBlue : Color.DeepSkyBlue;
 					RepeatIcon = _repeatType == RepeatTypeEnum.None ? Constants.Icons["mdi-repeat-off"] : _repeatType == RepeatTypeEnum.One ? Constants.Icons["mdi-repeat-once"] : Constants.Icons["mdi-repeat"];
 				});
 			AudioFileMenuCommand = new Command(
@@ -208,10 +206,6 @@ namespace xAudioPlayer.ViewModels {
 		public Color ShuffleBtnColor {
 			set { SetProperty(ref _shuffleBtnColor, value); }
 			get { return _shuffleBtnColor; }
-		}
-		public Color RepeatBtnColor {
-			set { SetProperty(ref _repeatBtnColor, value); }
-			get { return _repeatBtnColor; }
 		}
 		public string QueueAddBtnText {
 			set { SetProperty(ref _queueAddBtnText, value); }

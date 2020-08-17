@@ -9,6 +9,6 @@
 	<Color x:Key="SecondaryColor">#4d5e80</Color>
 	<Color x:Key="PrimaryTextColor">#5c8fed</Color>
 	<Color x:Key="SecondaryTextColor">#3c6fcf</Color>
-	<Color x:Key="TertiaryTextColor">#27488a</Color>
+	<Color x:Key="TertiaryTextColor">#738ebf</Color>
 	<Color x:Key="TransparentColor">Transparent</Color>
 </ResourceDictionary>

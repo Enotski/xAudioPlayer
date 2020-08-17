@@ -3,13 +3,13 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 					x:Class="xAudioPlayer.Themes.AestheticTheme">
 
-	<Color x:Key="PageBackgroundColor">#5679A6</Color>
-	<Color x:Key="NavigationBarColor">#2d63a8</Color>
+	<Color x:Key="PageBackgroundColor">#D97398</Color>
+	<Color x:Key="NavigationBarColor">#5679A6</Color>
 	<Color x:Key="PrimaryColor">#263f73</Color>
-	<Color x:Key="SecondaryColor">#222059</Color> 
-	<Color x:Key="PrimaryTextColor">#D97398</Color>
-	<Color x:Key="SecondaryTextColor">#A65398</Color>
-	<Color x:Key="TertiaryTextColor">#703166</Color>
+	<Color x:Key="SecondaryColor">#A65398</Color>
+	<Color x:Key="PrimaryTextColor">#2d63a8</Color>
+	<Color x:Key="SecondaryTextColor">#703166</Color>
+	<Color x:Key="TertiaryTextColor">#263f73</Color>
 	<Color x:Key="TransparentColor">Transparent</Color>
 </ResourceDictionary>
 

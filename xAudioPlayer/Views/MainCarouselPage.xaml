@@ -38,11 +38,11 @@
 					<Slider HeightRequest="50" FlowDirection="LeftToRight" Maximum="{Binding AudioFileDurationValue}" Value="{Binding AudioFileProgressValue}" DragCompletedCommand="{Binding AudioFileProgressChangedCommand}" ThumbColor="{DynamicResource TertiaryTextColor}"/>
 				</StackLayout>
 				<StackLayout VerticalOptions="End" HorizontalOptions="FillAndExpand" Orientation="Horizontal" Padding="5,5,5,10" HeightRequest="50" Style="{StaticResource Key=CustomBar}">
-					<Button TextColor="{Binding ShuffleBtnColor}" Command="{Binding ShuffleCommand}" Text="{Binding ShuffleIcon}" HorizontalOptions="StartAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
+					<Button TextColor="{Binding ShuffleBtnColor}" Command="{Binding ShuffleCommand}" Text="{Binding ShuffleIcon}" HorizontalOptions="StartAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" BackgroundColor="{StaticResource TransparentColor}"/>
 					<Button Command="{Binding ChangeAudioFileCommand}" Text="{Binding PrevIcon}" CommandParameter="prev" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource Key=NavBarBtn}"/>
 					<Button Command="{Binding PlayPauseCommand}" Text="{Binding PlayPauseIcon}" HorizontalOptions="CenterAndExpand"	FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource NavBarBtn}"/>
 					<Button Command="{Binding ChangeAudioFileCommand}" Text="{Binding NextIcon}" CommandParameter="next" HorizontalOptions="Center" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource NavBarBtn}"/>
-					<Button TextColor="{Binding RepeatBtnColor}" Command="{Binding RepeatCommand}" Text="{Binding RepeatIcon}" HorizontalOptions="EndAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" />
+					<Button Command="{Binding RepeatCommand}" Text="{Binding RepeatIcon}" HorizontalOptions="EndAndExpand" FontSize="30" WidthRequest="50" FontFamily="materialdesignicons-webfont.ttf#Material Design Icons" Style="{StaticResource NavBarBtn}"/>
 				</StackLayout>
 			</StackLayout>
 			<!--Content-->
@@ -155,7 +155,7 @@
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
-							<ProgressBar Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0" Progress="{Binding AudioFileProgressValue}"/>
+							<ProgressBar Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,0" Progress="{Binding AudioFileProgressValue}" ProgressColor="{StaticResource PrimaryTextColor}" BackgroundColor="{StaticResource TransparentColor}"/>
 							<Label Style="{StaticResource NavBarLabel}" Padding="5,0,0,0" Grid.Row="1" Grid.Column="0" VerticalTextAlignment="Center" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center" Text="{Binding NameOfCurrentAudioFile}" LineBreakMode="TailTruncation"/>
 							<StackLayout Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Padding="0,0,5,0">
 								<Button Style="{StaticResource NavBarBtn}" HeightRequest="40" Text="{Binding PrevIcon}" HorizontalOptions="Center" VerticalOptions="Fill"

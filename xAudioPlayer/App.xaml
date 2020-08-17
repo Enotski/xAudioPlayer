@@ -7,13 +7,13 @@
              mc:Ignorable="d"
              x:Class="xAudioPlayer.App">
 	<Application.Resources>
-		<ResourceDictionary Source="Themes/LightTheme.xaml"/>
+		<ResourceDictionary Source="Themes/FeastTheme.xaml"/>
 		<Style TargetType="Label">
-			<Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}" />
+			<Setter Property="TextColor" Value="{DynamicResource TertiaryTextColor}" />
 			<Setter Property="BackgroundColor" Value="{DynamicResource TransparentColor}" />
 		</Style>
 		<Style x:Key="SecondaryLabel" TargetType="Label">
-			<Setter Property="TextColor" Value="{DynamicResource TertiaryTextColor}" />
+			<Setter Property="TextColor" Value="{DynamicResource SecondaryColor}" />
 			<Setter Property="BackgroundColor" Value="{DynamicResource TransparentColor}" />
 		</Style>
 		<Style x:Key="NavBarLabel" TargetType="Label">
@@ -31,7 +31,7 @@
 			<Setter Property="TextColor" Value="{DynamicResource PrimaryColor}"/>
 		</Style>
 		<Style x:Key="PrimaryBtn" TargetType="Button" BasedOn="{StaticResource Key=BaseBtnStyle}">
-			<Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}"/>
+			<Setter Property="TextColor" Value="{DynamicResource TertiaryTextColor}"/>
 		</Style>
 		<Style x:Key="CustomBar" TargetType="StackLayout">
 			<Setter Property="BackgroundColor" Value="{DynamicResource NavigationBarColor}"/>
