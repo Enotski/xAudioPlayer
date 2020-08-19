@@ -10,6 +10,9 @@ using xAudioPlayer.Repositories;
 using xAudioPlayer.Services;
 
 namespace xAudioPlayer.ViewModels {
+	/// <summary>
+	/// VM of queue page
+	/// </summary>
 	public class QueueViewModel : BaseViewModel {
 		string _playlistInfo;
 		bool _allItemsChecked;
@@ -20,6 +23,7 @@ namespace xAudioPlayer.ViewModels {
 		public string CloseIcon { get; } = Constants.Icons["mdi-close"];
 		public string CheckMultipleIcon { get; } = Constants.Icons["mdi-checkbox-multiple-marked-outline"];
 		public string DeleteIcon { get; } = Constants.Icons["mdi-delete-forever-outline"];
+
 		public QueueViewModel(INavigation nav) : base(nav) {
 			LoadQueuePlayListFromRepo();
 			_plRepo.OnPlaylistRefreshed += LoadQueuePlayListFromRepo;
@@ -31,6 +35,7 @@ namespace xAudioPlayer.ViewModels {
 					item.Num = ++i;
 				}
 			};
+
 			CheckAllCommand = new Command(
 				execute: async () => {
 					await Task.Run(() => {
@@ -86,6 +91,9 @@ namespace xAudioPlayer.ViewModels {
 				await Task.Run(() => { _plRepo.RemoveFromPlayList("Queue", file != null ? new List<string>() { file.FullPath } : QueuePLaylist.Where(x => x.ItemChecked).Select(x => x.FullPath)); });
 			} catch { }
 		}
+		/// <summary>
+		/// Load queue audio files from pl repository
+		/// </summary>
 		private async void LoadQueuePlayListFromRepo() {
 			try {
 				await Task.Run(() => {
@@ -97,6 +105,9 @@ namespace xAudioPlayer.ViewModels {
 				});
 			} catch { }
 		}
+		/// <summary>
+		/// Update info of queue playlist
+		/// </summary>
 		private void UpdateUi() {
 			var totalDuration = new TimeSpan(QueuePLaylist.Sum(r => r.Duration.Ticks));
 			PlaylistInfo = $"{QueuePLaylist.Count} / {totalDuration:hh\\:mm\\:ss} / {Utilities.SizeSuffix(QueuePLaylist.Sum(x => x.Size), 2)}";

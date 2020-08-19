@@ -17,6 +17,9 @@ namespace xAudioPlayer.ViewModels {
 	/// VM of player page
 	/// </summary>
 	public class PlayerViewModel : BaseViewModel {
+		/// ToDo
+		/// Show cover image of current audio file 
+
 		double _audioFileProgressValue;
 		double _audioFileDurationValue = 0.1;
 		string _playlistInfo = "-/-";
@@ -215,6 +218,9 @@ namespace xAudioPlayer.ViewModels {
 			set { SetProperty(ref _favoriteAddBtnText, value); }
 			get { return _favoriteAddBtnText; }
 		}
+		/// <summary>
+		/// Stop current audio file if it's not exist in current pl and update pl information
+		/// </summary>
 		private async void PlaylistsCollectionRefreshed() {
 			await Task.Run(() => {
 				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(CurrentAudioFile))
@@ -222,6 +228,10 @@ namespace xAudioPlayer.ViewModels {
 				UpdatePlInfo();
 			});
 		}
+		/// <summary>
+		/// Play or pause audio file (set new audio file, if current is null)
+		/// </summary>
+		/// <param name="file">new audio file</param>
 		private async void PlayPauseAudioFile(AudioFile file = null) {
 			if (file != null) {
 				CurrentAudioFile = file;
@@ -235,6 +245,11 @@ namespace xAudioPlayer.ViewModels {
 				await CrossMediaManager.Current.PlayPause();
 			}
 		}
+		/// <summary>
+		/// Invokes when audio file progress changed
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private async void MediaPositionChanged(object sender, MediaManager.Playback.PositionChangedEventArgs e) {
 			await Task.Run(() => {
 				AudioFileProgressValue = e.Position.TotalMinutes;
@@ -242,6 +257,11 @@ namespace xAudioPlayer.ViewModels {
 					MediaItemFinished(this, new MediaItemEventArgs(new MediaItem()));
 			});
 		}
+		/// <summary>
+		/// Change audio file, stop playig if playlist ended or repeat current (according of _repeatType state)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private async void MediaItemFinished(object sender, MediaItemEventArgs e) {
 			if (Math.Truncate(CrossMediaManager.Current.Position.TotalMinutes) >= Math.Truncate(CurrentAudioFile.Duration.TotalMinutes)) {
 				if (_repeatType == RepeatTypeEnum.One) {
@@ -253,12 +273,20 @@ namespace xAudioPlayer.ViewModels {
 				}
 			}
 		}
+		/// <summary>
+		/// Update info about Media state of player (playing / paused)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private async void MediaStateChanged(object sender, StateChangedEventArgs e) {
 			await Task.Run(() => {
 				PlayPauseIcon = CrossMediaManager.Current.State == MediaManager.Player.MediaPlayerState.Playing ? Constants.Icons["mdi-pause"] : Constants.Icons["mdi-play-outline"];
 				_plRepo.UpdateMediaPLayerState(CrossMediaManager.Current.State);
 			});
 		}
+		/// <summary>
+		/// Stop current audio file if it's not exist in current pl and update pl information
+		/// </summary>
 		private async void PlayListRefreshed() {
 			await Task.Run(() => {
 				if (!_plRepo.Playlists[_plRepo.CurrentPlaylistName].Contains(CurrentAudioFile)) {
@@ -267,12 +295,20 @@ namespace xAudioPlayer.ViewModels {
 				UpdatePlInfo();
 			});
 		}
+		/// <summary>
+		/// Update Pl info and current audio file labels
+		/// </summary>
 		private async void UpdatePlInfo() {
 			await Task.Run(() => {
 				CurrentAudioFileName = CurrentAudioFile?.Name ?? "-/-";
 				PlaylistInfo = $"{_plRepo.CurrentPlaylistName} ({ (CurrentAudioFile == null ? 0 : _plRepo.Playlists[_plRepo.CurrentPlaylistName].IndexOf(CurrentAudioFile) + 1)} / {_plRepo.Playlists[_plRepo.CurrentPlaylistName].Count()})";
 			});
 		}
+		/// <summary>
+		/// Change audio file (previous/next)
+		/// </summary>
+		/// <param name="isHandle"></param>
+		/// <param name="prev"></param>
 		private async void ChangeAudioFile(bool isHandle, bool prev = false) {
 			try {
 				await Task.Run(() => {
@@ -280,6 +316,10 @@ namespace xAudioPlayer.ViewModels {
 				});
 			} catch { }
 		}
+		/// <summary>
+		/// Add current audio file to another pl or remove from it
+		/// </summary>
+		/// <param name="args"></param>
 		async void AddAudioFile(string args) {
 			try {
 				await Task.Run(() => {

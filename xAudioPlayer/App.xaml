@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              x:Class="xAudioPlayer.App">
 	<Application.Resources>
-		<ResourceDictionary Source="Themes/FeastTheme.xaml"/>
+		<ResourceDictionary Source="Themes/LightTheme.xaml"/>
 		<Style TargetType="Label">
 			<Setter Property="TextColor" Value="{DynamicResource TertiaryTextColor}" />
 			<Setter Property="BackgroundColor" Value="{DynamicResource TransparentColor}" />

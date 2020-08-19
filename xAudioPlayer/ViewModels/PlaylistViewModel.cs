@@ -515,19 +515,34 @@ namespace xAudioPlayer.ViewModels {
 				await Task.Run(() => { _plRepo.SortPlayList(SortType, SortReverseToggled); });
 			} catch { }
 		}
+		/// <summary>
+		/// Set time of current progress of audio file
+		/// </summary>
+		/// <param name="progress"></param>
 		private void MediaProgressChanged(TimeSpan progress) {
 			if (SelectedItem != null)
 				AudioFileProgressValue = progress.TotalMinutes / SelectedItem.Duration.TotalMinutes;
 		}
+		/// <summary>
+		/// Set new audio file as selected in playlist
+		/// </summary>
+		/// <param name="audioFile"></param>
 		void AudioFileChanged(AudioFile audioFile) {
 			SelectedItem = audioFile;
 		}
+		/// <summary>
+		/// Update info about current audio file
+		/// </summary>
 		void UpdateCurentAudioFileInfo() {
 			//foreach (var item in CurrentPLaylist)
 			//	item.BgColor = Color.Transparent;
 			//SelectedItem.BgColor = Color.LightGray;
 			NameOfCurrentAudioFile = SelectedItem.Name;
 		}
+		/// <summary>
+		/// Add audio file to another playlist or remove from it
+		/// </summary>
+		/// <param name="args"></param>
 		async void AddAudioFile(string args) {
 			try {
 				await Task.Run(() => {
@@ -541,6 +556,11 @@ namespace xAudioPlayer.ViewModels {
 				});
 			} catch { }
 		}
+		/// <summary>
+		/// Change audio file
+		/// </summary>
+		/// <param name="isHandle"></param>
+		/// <param name="prev"></param>
 		async void ChangeAudioFile(bool isHandle, bool prev = false) {
 			try {
 				await Task.Run(() => {
@@ -548,6 +568,10 @@ namespace xAudioPlayer.ViewModels {
 				});
 			} catch { }
 		}
+		/// <summary>
+		/// Update PlayPauseIcon in accordance of MediaPlayerState
+		/// </summary>
+		/// <param name="state"></param>
 		private void MediaStateUpdated(MediaPlayerState state) {
 			PlayPauseIcon = state == MediaPlayerState.Playing ? Constants.Icons["mdi-pause"] : Constants.Icons["mdi-play-outline"];
 		}

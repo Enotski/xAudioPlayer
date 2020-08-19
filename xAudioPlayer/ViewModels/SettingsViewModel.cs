@@ -9,6 +9,9 @@ using xAudioPlayer.Repositories;
 using xAudioPlayer.Themes;
 
 namespace xAudioPlayer.ViewModels {
+	/// <summary>
+	/// VM of settings page
+	/// </summary>
 	public class SettingsViewModel : BaseViewModel {
 		string _currentThemeName;
 		bool _modalBgVisible;
@@ -123,10 +126,16 @@ namespace xAudioPlayer.ViewModels {
 			get => _fifthThemeColors;
 			set { SetProperty(ref _fifthThemeColors, value); }
 		}
+		/// <summary>
+		/// Set modal and background visibility
+		/// </summary>
 		void SetModalUi() {
 			ModalBgVisible = !ModalBgVisible;
 			AcceptModalVisible = !AcceptModalVisible;
 		}
+		/// <summary>
+		/// Set colors of current theme
+		/// </summary>
 		void RefreshColors() {
 			FirstCurrentThemeColor = CurrentThemeColors[0];
 			SecondCurrentThemeColor = CurrentThemeColors[1];
@@ -134,6 +143,9 @@ namespace xAudioPlayer.ViewModels {
 			FourthCurrentThemeColor = CurrentThemeColors[3];
 			FifthCurrentThemeColor = CurrentThemeColors[4];
 		}
+		/// <summary>
+		/// Change current theme
+		/// </summary>
 		void SetTheme() {
 			ICollection<ResourceDictionary> mergedDictionaries = Application.Current.Resources.MergedDictionaries;
 			if (mergedDictionaries != null) {

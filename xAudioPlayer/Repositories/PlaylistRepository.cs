@@ -11,6 +11,9 @@ namespace xAudioPlayer.Repositories {
 	/// Repository for working with playlists
 	/// </summary>
 	public class PlaylistRepository {
+		/// TODO
+		/// Save/load playlists in/from sqlite db
+
 		RepeatTypeEnum _repeatType = RepeatTypeEnum.None;
 		bool _isShuffle;
 		int _playlistAudioFileIndx = 0;
@@ -61,13 +64,13 @@ namespace xAudioPlayer.Repositories {
 		public event PLayPauseAudioFile OnPLayPauseAudioFile;
 
 		/// <summary>
-		/// Occures when MediaState updatet 
+		/// Occures when MediaState updated 
 		/// </summary>
 		public delegate void MediaStateUpdated(MediaPlayerState state);
 		public event MediaStateUpdated OnMediaStateUpdated;
 
 		/// <summary>
-		/// Occures when MediaState updatet 
+		/// Occures when MediaState progress updated 
 		/// </summary>
 		public delegate void MediaProgressUpdated(TimeSpan progress);
 		public event MediaProgressUpdated OnMediaProgressUpdated;
@@ -75,22 +78,6 @@ namespace xAudioPlayer.Repositories {
 		public string CurrentPlaylistName { get; set; }
 		public Dictionary<string, List<AudioFile>> Playlists { get; } = new Dictionary<string, List<AudioFile>>();
 
-		/// <summary>
-		/// Get data from xml file
-		/// </summary>
-		public async void GetDataFromXml() {
-			try {
-
-			} catch { }
-		}
-		/// <summary>
-		/// Save data to xml file
-		/// </summary>
-		public async void SetDataToXml() {
-			try {
-
-			} catch { }
-		}
 		/// <summary>
 		/// Chnage current playlist
 		/// </summary>
@@ -106,6 +93,10 @@ namespace xAudioPlayer.Repositories {
 			OnPlaylistRefreshed?.Invoke();
 
 		}
+		/// <summary>
+		/// Invoke OnMediaProgressUpdated event
+		/// </summary>
+		/// <param name="progress">current progress</param>
 		public void CurrentAudioProgressUpdated(TimeSpan progress) {
 			OnMediaProgressUpdated?.Invoke(progress);
 		}
@@ -299,6 +290,10 @@ namespace xAudioPlayer.Repositories {
 				Playlists[currName].Insert(newIndex, tmp);
 			} catch { }
 		}
+		/// <summary>
+		/// Play or pause audio file
+		/// </summary>
+		/// <param name="path">path of new audio file</param>
 		public void PlayPauseAudioFile(string path = null) {
 			try {
 				if (string.IsNullOrWhiteSpace(path))
@@ -307,13 +302,26 @@ namespace xAudioPlayer.Repositories {
 					OnPLayPauseAudioFile?.Invoke(Playlists[CurrentPlaylistName].FirstOrDefault(x => x.FullPath == path));
 			} catch { }
 		}
-
+		/// <summary>
+		/// Invoke OnMediaStateUpdated event
+		/// </summary>
+		/// <param name="state">current state of media player</param>
 		public void UpdateMediaPLayerState(MediaPlayerState state) {
 			OnMediaStateUpdated?.Invoke(state);
 		}
+		/// <summary>
+		/// Set shuffle mode
+		/// </summary>
+		/// <param name="isShuffle">assignable value</param>
 		public void SetShuffle(bool isShuffle) {
 			_isShuffle = isShuffle;
 		}
+		/// <summary>
+		/// Change audio file according current playlist, queue playlist and shuffle mode
+		/// </summary>
+		/// <param name="filePath">path of new audio file</param>
+		/// <param name="prev">is previous file</param>
+		/// <param name="isHandle">is invoked by user</param>
 		public void ChangeAudioFile(string filePath, bool prev, bool isHandle = false) {
 			try {
 				if (Playlists["Queue"].Any() && !isHandle) {

@@ -185,7 +185,6 @@ namespace xAudioPlayer.ViewModels {
 			set { SetProperty(ref _errorDublicateMessageColor, value); }
 			get { return _errorDublicateMessageColor; }
 		}
-
 		public string PlaylistNameText {
 			set {
 				SetProperty(ref _playlistNameText, value);

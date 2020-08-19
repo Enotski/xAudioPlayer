@@ -9,6 +9,9 @@ namespace xAudioPlayer.Repositories {
 	/// Repository of custom settings
 	/// </summary>
 	public class SettingsRepository {
+		/// TODO
+		/// Save/load settings data in/from sqlite db
+
 		static SettingsRepository _instance;
 		public List<ThemeItem> ThemesList { get; } = new List<ThemeItem>();
 		public static ThemeItem CurrentTheme { get; private set; }
@@ -26,8 +29,12 @@ namespace xAudioPlayer.Repositories {
 				new ThemeItem{ Name = "NuanceTheme", Colors = new Color[5] {Color.FromHex("#7f2958"), Color.FromHex("#f29c6b"), Color.FromHex("#a65d85"), Color.FromHex("#d96c80"), Color.FromHex("#f2e4bb") } },
 				new ThemeItem{ Name = "FeastTheme", Colors = new Color[5] {Color.FromHex("#f249a6"), Color.FromHex("#22ddf2"), Color.FromHex("#f2d541"), Color.FromHex("#020659"), Color.FromHex("#12ff55") } },
 			});
-			CurrentTheme = ThemesList[4];
+			CurrentTheme = ThemesList[1];
 		}
+		/// <summary>
+		/// Set theme by theme
+		/// </summary>
+		/// <param name="name">name of theme</param>
 		public void SetCurrentTheme(string name) {
 			if(!string.IsNullOrWhiteSpace(name) && ThemesList.Any(x => x.Name == name)) {
 				CurrentTheme = ThemesList.FirstOrDefault(x => x.Name == name);

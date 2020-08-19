@@ -48,7 +48,9 @@ namespace xAudioPlayer.Services {
 			{"mdi-delete-forever-outline", "\U000F0B89"},
 			{"mdi-close", "\U000F0156"},
 		};
-
+		/// <summary>
+		/// Audio file avaliable extensions
+		/// </summary>
 		public static HashSet<string> AudioFileExtensions = new HashSet<string>() {
 			".mp3", ".flac", ".wav", ".aif", ".mid", ".sdt", ".flp", ".wow", ".rns", ".4pm", ".pcm", ".wav", ".ogg", ".opus", ".wave", ".midi", ".wma", ".alac", ".aac", ".aiff", ".f32"
 		};
