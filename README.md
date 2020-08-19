@@ -8,4 +8,4 @@
   
   <img src="https://github.com/Enotski/xAudioPlayer/blob/master/Screenshots/1.jpg" width="400">    <img src="https://github.com/Enotski/xAudioPlayer/blob/master/Screenshots/2.jpg" width="400">   
   
-  <img src="https://github.com/Enotski/xAudioPlayer/blob/master/Screenshots/3.jpg" width="400">
+  <img src="https://github.com/Enotski/xAudioPlayer/blob/master/Screenshots/3.jpg" width="400">    <img src="https://github.com/Enotski/xAudioPlayer/blob/master/Screenshots/4.jpg" width="400">   
